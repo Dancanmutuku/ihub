@@ -1,0 +1,47 @@
+{% load store_tags %}
+<div class="product-card h-100">
+  {% if product.discount_percent %}
+  <span class="badge-sale">-{{ product.discount_percent }}%</span>
+  {% elif product.new_arrival %}
+  <span class="badge-new">NEW</span>
+  {% endif %}
+
+  <a href="{{ product.get_absolute_url }}" class="product-img-link">
+    {% if product.image_url %}
+    <img src="{{ product.image_url }}" alt="{{ product.name }}" class="product-img" loading="lazy"
+         onerror="this.src='https://placehold.co/400x300/1a1a2e/00d4ff?text=TechStore'" />
+    {% else %}
+    <div class="product-img-placeholder"><i class="bi bi-cpu-fill"></i></div>
+    {% endif %}
+  </a>
+
+  <div class="product-body">
+    <div class="product-brand">{{ product.brand|default:"TechStore" }}</div>
+    <h6 class="product-name">
+      <a href="{{ product.get_absolute_url }}">{{ product.name|truncatechars:55 }}</a>
+    </h6>
+
+    <div class="product-pricing">
+      <span class="product-price">{{ product.price|currency_kes }}</span>
+      {% if product.original_price %}
+      <span class="product-original">{{ product.original_price|currency_kes }}</span>
+      {% endif %}
+    </div>
+
+    <div class="product-actions mt-2">
+      {% if product.in_stock %}
+      <form method="post" action="{% url 'cart:cart_add' product.id %}" class="add-to-cart-form">
+        {% csrf_token %}
+        <input type="hidden" name="quantity" value="1" />
+        <button type="submit" class="btn btn-add-cart w-100">
+          <i class="bi bi-bag-plus me-1"></i>Add to Cart
+        </button>
+      </form>
+      {% else %}
+      <button class="btn btn-out-stock w-100" disabled>
+        <i class="bi bi-x-circle me-1"></i>Out of Stock
+      </button>
+      {% endif %}
+    </div>
+  </div>
+</div>

@@ -1,0 +1,53 @@
+{% extends 'base.html' %}
+{% block title %}Order #{{ order.id }} - TechVault{% endblock %}
+{% block content %}
+<div class="page-header">
+    <div class="container"><h1>ORDER #{{ order.id }}</h1></div>
+</div>
+<div class="container py-4">
+    <div class="row g-4">
+        <div class="col-lg-8">
+            <div style="background:var(--card-bg);border:1px solid var(--border);border-radius:8px;padding:1.5rem">
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <h5 style="color:white;margin:0">Order Items</h5>
+                    <span style="background:{% if order.status == 'delivered' %}rgba(0,212,100,0.1){% elif order.status == 'cancelled' %}rgba(255,50,50,0.1){% else %}rgba(0,212,255,0.1){% endif %};color:{% if order.status == 'delivered' %}#00d464{% elif order.status == 'cancelled' %}#ff4444{% else %}var(--primary){% endif %};padding:4px 12px;border-radius:4px;font-size:0.8rem;font-weight:700;text-transform:uppercase;letter-spacing:1px">{{ order.get_status_display }}</span>
+                </div>
+                {% for item in order.items.all %}
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <div class="d-flex align-items-center gap-3">
+                        <img src="{{ item.product.image_url }}" style="width:55px;height:55px;object-fit:cover;border-radius:4px;border:1px solid var(--border)" onerror="this.src='https://images.unsplash.com/photo-1518770660439-4636190af475?w=100&q=60'" alt="">
+                        <div>
+                            <div style="color:white;font-weight:600">{{ item.product.name }}</div>
+                            <div style="color:var(--text-dim);font-size:0.85rem">{{ item.quantity }} × KSh {{ item.price|floatformat:0 }}</div>
+                        </div>
+                    </div>
+                    <span style="color:var(--primary);font-family:'Orbitron',monospace">KSh {{ item.subtotal|floatformat:0 }}</span>
+                </div>
+                {% endfor %}
+                <hr style="border-color:var(--border)">
+                <div class="d-flex justify-content-between">
+                    <span style="color:white;font-weight:700">Total</span>
+                    <span style="color:var(--primary);font-family:'Orbitron',monospace;font-weight:700;font-size:1.1rem">KSh {{ order.total_price|floatformat:0 }}</span>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-4">
+            <div style="background:var(--card-bg);border:1px solid var(--border);border-radius:8px;padding:1.5rem">
+                <h5 style="font-family:'Orbitron',monospace;color:var(--primary);font-size:0.9rem;letter-spacing:2px;margin-bottom:1rem">ORDER INFO</h5>
+                <div class="mb-2"><span style="color:var(--text-dim);font-size:0.85rem">Date:</span><br><span style="color:var(--text)">{{ order.created_at|date:"M d, Y H:i" }}</span></div>
+                <div class="mb-2"><span style="color:var(--text-dim);font-size:0.85rem">Phone:</span><br><span style="color:var(--text)">{{ order.phone }}</span></div>
+                <div class="mb-2"><span style="color:var(--text-dim);font-size:0.85rem">Address:</span><br><span style="color:var(--text)">{{ order.shipping_address }}</span></div>
+                <div class="mb-3"><span style="color:var(--text-dim);font-size:0.85rem">Payment:</span><br>
+                    {% if order.is_paid %}<span style="color:#00d464"><i class="fas fa-check-circle me-1"></i>Paid ({{ order.mpesa_code }})</span>
+                    {% else %}<span style="color:orange"><i class="fas fa-clock me-1"></i>Pending Payment</span>{% endif %}
+                </div>
+                {% if not order.is_paid %}
+                <a href="{% url 'initiate_payment' order.id %}" class="btn-accent d-block text-center" style="padding:0.7rem;text-decoration:none;border-radius:4px;font-family:'Rajdhani';font-weight:700;letter-spacing:1px">
+                    <i class="fas fa-mobile-alt me-2"></i>Pay with M-Pesa
+                </a>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

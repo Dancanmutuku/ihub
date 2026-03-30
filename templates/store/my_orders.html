@@ -1,0 +1,40 @@
+{% extends 'base.html' %}
+{% block title %}My Orders - TechVault{% endblock %}
+{% block content %}
+<div class="page-header">
+    <div class="container"><h1><i class="fas fa-box me-3" style="color:var(--primary)"></i>MY ORDERS</h1></div>
+</div>
+<div class="container py-4">
+    {% if orders %}
+    {% for order in orders %}
+    <div style="background:var(--card-bg);border:1px solid var(--border);border-radius:8px;padding:1.5rem;margin-bottom:1rem">
+        <div class="d-flex justify-content-between align-items-start flex-wrap gap-3">
+            <div>
+                <span style="font-family:'Orbitron',monospace;color:white;font-weight:700">Order #{{ order.id }}</span>
+                <span style="color:var(--text-dim);font-size:0.85rem;margin-left:1rem">{{ order.created_at|date:"M d, Y" }}</span>
+                <div class="mt-1">
+                    <span style="background:{% if order.status == 'delivered' %}rgba(0,212,100,0.1){% elif order.status == 'cancelled' %}rgba(255,50,50,0.1){% else %}rgba(0,212,255,0.1){% endif %};color:{% if order.status == 'delivered' %}#00d464{% elif order.status == 'cancelled' %}#ff4444{% else %}var(--primary){% endif %};padding:3px 10px;border-radius:3px;font-size:0.75rem;font-weight:700;text-transform:uppercase;letter-spacing:1px">{{ order.get_status_display }}</span>
+                    {% if order.is_paid %}<span style="background:rgba(0,212,100,0.1);color:#00d464;padding:3px 10px;border-radius:3px;font-size:0.75rem;font-weight:700;margin-left:0.5rem">PAID</span>{% else %}<span style="background:rgba(255,165,0,0.1);color:orange;padding:3px 10px;border-radius:3px;font-size:0.75rem;font-weight:700;margin-left:0.5rem">UNPAID</span>{% endif %}
+                </div>
+            </div>
+            <div class="text-end">
+                <div style="color:var(--primary);font-family:'Orbitron',monospace;font-weight:700;font-size:1.1rem">KSh {{ order.total_price|floatformat:0 }}</div>
+                <div class="d-flex gap-2 mt-2 justify-content-end">
+                    <a href="{% url 'order_detail' order.id %}" class="btn-outline-custom" style="padding:0.35rem 0.9rem;text-decoration:none;font-size:0.85rem">View</a>
+                    {% if not order.is_paid %}
+                    <a href="{% url 'initiate_payment' order.id %}" class="btn-accent" style="padding:0.35rem 0.9rem;text-decoration:none;border-radius:4px;font-family:'Rajdhani';font-weight:700;font-size:0.85rem">Pay Now</a>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+    {% else %}
+    <div class="text-center py-5">
+        <i class="fas fa-box-open" style="font-size:4rem;color:var(--border);margin-bottom:1.5rem"></i>
+        <h4 style="color:var(--text-dim)">No orders yet</h4>
+        <a href="{% url 'product_list' %}" class="btn-primary-custom mt-3" style="text-decoration:none;padding:0.7rem 2rem">Start Shopping</a>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

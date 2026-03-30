@@ -1,0 +1,71 @@
+{% extends 'base.html' %}
+{% block title %}Profile - TechVault{% endblock %}
+{% block content %}
+<div class="page-header">
+    <div class="container"><h1><i class="fas fa-user-circle me-3" style="color:var(--primary)"></i>MY PROFILE</h1></div>
+</div>
+<div class="container py-4">
+    <div class="row g-4">
+        <div class="col-lg-4">
+            <div style="background:var(--card-bg);border:1px solid var(--border);border-radius:8px;padding:2rem;text-align:center">
+                <div style="width:80px;height:80px;background:linear-gradient(135deg,var(--primary),var(--accent));border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 1rem;font-size:2rem;color:var(--darker);font-weight:700;font-family:'Orbitron',monospace">
+                    {{ user.username|first|upper }}
+                </div>
+                <h5 style="color:white;font-weight:700">{{ user.get_full_name|default:user.username }}</h5>
+                <p style="color:var(--text-dim);font-size:0.85rem;margin:0">{{ user.email }}</p>
+                <div style="border-top:1px solid var(--border);margin-top:1.5rem;padding-top:1.5rem">
+                    <div class="d-flex justify-content-around">
+                        <div class="text-center">
+                            <div style="font-family:'Orbitron',monospace;font-size:1.2rem;color:var(--primary);font-weight:700">{{ user.order_set.count }}</div>
+                            <div style="color:var(--text-dim);font-size:0.75rem;text-transform:uppercase;letter-spacing:1px">Orders</div>
+                        </div>
+                        <div class="text-center">
+                            <div style="font-family:'Orbitron',monospace;font-size:1.2rem;color:var(--primary);font-weight:700">{{ user.wishlist_set.count }}</div>
+                            <div style="color:var(--text-dim);font-size:0.75rem;text-transform:uppercase;letter-spacing:1px">Wishlist</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="mt-3 d-grid gap-2">
+                    <a href="{% url 'my_orders' %}" class="btn-outline-custom text-center" style="text-decoration:none;padding:0.6rem"><i class="fas fa-box me-2"></i>My Orders</a>
+                    <a href="{% url 'wishlist' %}" class="btn-outline-custom text-center" style="text-decoration:none;padding:0.6rem"><i class="fas fa-heart me-2"></i>Wishlist</a>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-8">
+            <div style="background:var(--card-bg);border:1px solid var(--border);border-radius:8px;padding:2rem">
+                <h5 style="font-family:'Orbitron',monospace;color:var(--primary);font-size:0.9rem;letter-spacing:2px;margin-bottom:1.5rem">ACCOUNT SETTINGS</h5>
+                <form method="post">
+                    {% csrf_token %}
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <label class="form-label">First Name</label>
+                            <input type="text" name="first_name" class="form-control" value="{{ user.first_name }}">
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Last Name</label>
+                            <input type="text" name="last_name" class="form-control" value="{{ user.last_name }}">
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Username</label>
+                            <input type="text" class="form-control" value="{{ user.username }}" readonly style="opacity:0.6">
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Email</label>
+                            <input type="email" name="email" class="form-control" value="{{ user.email }}">
+                        </div>
+                        <div class="col-12">
+                            <label class="form-label">Member Since</label>
+                            <input type="text" class="form-control" value="{{ user.date_joined|date:'M d, Y' }}" readonly style="opacity:0.6">
+                        </div>
+                        <div class="col-12 mt-2">
+                            <button type="submit" class="btn-primary-custom" style="padding:0.7rem 2rem">
+                                <i class="fas fa-save me-2"></i>Save Changes
+                            </button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

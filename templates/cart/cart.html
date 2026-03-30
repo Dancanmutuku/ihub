@@ -1,0 +1,103 @@
+{% extends 'base.html' %}
+{% load store_tags %}
+
+{% block title %}Your Cart – TechStore KE{% endblock %}
+
+{% block content %}
+<div class="container-fluid px-4 py-4">
+  <h3 class="section-title mb-4"><i class="bi bi-bag-fill me-2"></i>Your <span class="text-gradient">Cart</span></h3>
+
+  {% if cart|length > 0 %}
+  <div class="row g-4">
+
+    <!-- Cart Items -->
+    <div class="col-lg-8">
+      <div class="cart-table">
+        {% for item in cart %}
+        <div class="cart-row">
+          <div class="cart-img-wrap">
+            <img src="{{ item.product.image_url|default:'https://placehold.co/100x100/1a1a2e/00d4ff?text=IMG' }}"
+                 alt="{{ item.product_name }}" class="cart-img"
+                 onerror="this.src='https://placehold.co/100x100/1a1a2e/00d4ff?text=IMG'" />
+          </div>
+          <div class="cart-info flex-grow-1">
+            <a href="{{ item.product.get_absolute_url }}" class="cart-item-name">{{ item.product.name }}</a>
+            <div class="cart-item-price">{{ item.price|currency_kes }} each</div>
+          </div>
+          <div class="cart-qty-wrap">
+            <form method="post" action="{% url 'cart:cart_update' item.product.id %}" class="d-flex align-items-center gap-2">
+              {% csrf_token %}
+              <div class="qty-control small">
+                <button type="button" class="qty-btn"
+                        onclick="this.closest('form').querySelector('[name=quantity]').stepDown(); this.closest('form').submit()">
+                  <i class="bi bi-dash"></i>
+                </button>
+                <input type="number" name="quantity" value="{{ item.quantity }}"
+                       min="1" max="{{ item.product.stock }}" class="qty-input"
+                       onchange="this.closest('form').submit()" />
+                <button type="button" class="qty-btn"
+                        onclick="this.closest('form').querySelector('[name=quantity]').stepUp(); this.closest('form').submit()">
+                  <i class="bi bi-plus"></i>
+                </button>
+              </div>
+            </form>
+          </div>
+          <div class="cart-subtotal">{{ item.total_price|currency_kes }}</div>
+          <div>
+            <a href="{% url 'cart:cart_remove' item.product.id %}" class="btn btn-remove" title="Remove">
+              <i class="bi bi-trash3"></i>
+            </a>
+          </div>
+        </div>
+        {% endfor %}
+      </div>
+
+      <div class="d-flex justify-content-between mt-3 flex-wrap gap-2">
+        <a href="{% url 'store:product_list' %}" class="btn btn-outline-accent btn-sm">
+          <i class="bi bi-arrow-left me-1"></i>Continue Shopping
+        </a>
+      </div>
+    </div>
+
+    <!-- Order Summary -->
+    <div class="col-lg-4">
+      <div class="summary-card">
+        <h5 class="summary-title"><i class="bi bi-receipt me-2"></i>Order Summary</h5>
+        <div class="summary-row">
+          <span>Subtotal ({{ cart|length }} item{{ cart|length|pluralize }})</span>
+          <span>{{ cart.get_total_price|currency_kes }}</span>
+        </div>
+        <div class="summary-row">
+          <span>Delivery</span>
+          <span class="text-success">Free</span>
+        </div>
+        <div class="summary-total">
+          <span>Total</span>
+          <span>{{ cart.get_total_price|currency_kes }}</span>
+        </div>
+        <a href="{% url 'orders:order_create' %}" class="btn btn-hero-primary w-100 mt-3">
+          <i class="bi bi-lock-fill me-2"></i>Proceed to Checkout
+        </a>
+        <div class="mt-3 text-center">
+          <small class="text-muted"><i class="bi bi-phone-fill me-1 text-accent"></i>Pay securely via M-Pesa</small>
+        </div>
+        <div class="payment-badges mt-3 justify-content-center">
+          <span class="payment-badge"><i class="bi bi-shield-check me-1"></i>Secure</span>
+          <span class="payment-badge"><i class="bi bi-phone-fill me-1"></i>M-Pesa</span>
+        </div>
+      </div>
+    </div>
+
+  </div>
+  {% else %}
+  <div class="empty-state text-center py-5">
+    <i class="bi bi-bag-x display-1 text-muted"></i>
+    <h4 class="mt-3">Your cart is empty</h4>
+    <p class="text-muted">Looks like you haven't added anything yet.</p>
+    <a href="{% url 'store:product_list' %}" class="btn btn-hero-primary mt-2">
+      <i class="bi bi-grid me-2"></i>Start Shopping
+    </a>
+  </div>
+  {% endif %}
+</div>
+{% endblock %}

@@ -1,0 +1,22 @@
+{% extends 'base.html' %}
+{% block title %}Payment Successful - TechVault{% endblock %}
+{% block content %}
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6 text-center">
+            <div style="background:var(--card-bg);border:1px solid rgba(0,212,100,0.3);border-radius:12px;padding:3rem">
+                <div style="width:80px;height:80px;background:rgba(0,212,100,0.1);border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 1.5rem">
+                    <i class="fas fa-check" style="font-size:2.5rem;color:#00d464"></i>
+                </div>
+                <h3 style="color:#00d464;font-family:'Orbitron',monospace;font-weight:700">PAYMENT CONFIRMED</h3>
+                <p style="color:var(--text);margin:1rem 0">Order #{{ order.id }} has been paid successfully!</p>
+                {% if order.mpesa_code %}<div style="background:rgba(0,212,100,0.05);border:1px solid rgba(0,212,100,0.2);border-radius:6px;padding:0.8rem;margin:1rem 0"><span style="color:var(--text-dim);font-size:0.85rem">M-Pesa Code: </span><strong style="color:#00d464;font-family:'Orbitron',monospace">{{ order.mpesa_code }}</strong></div>{% endif %}
+                <div class="d-flex gap-3 justify-content-center mt-2">
+                    <a href="{% url 'order_detail' order.id %}" class="btn-outline-custom" style="text-decoration:none;padding:0.7rem 1.5rem">View Order</a>
+                    <a href="{% url 'product_list' %}" class="btn-primary-custom" style="text-decoration:none;padding:0.7rem 1.5rem">Shop More</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

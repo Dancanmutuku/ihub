@@ -1,0 +1,111 @@
+{% extends 'base.html' %}
+{% load store_tags crispy_forms_tags %}
+
+{% block title %}Checkout – TechStore KE{% endblock %}
+
+{% block content %}
+<div class="container-fluid px-4 py-4">
+  <h3 class="section-title mb-4"><i class="bi bi-bag-check me-2"></i>Checkout</h3>
+
+  <div class="row g-4">
+
+    <!-- Delivery Details -->
+    <div class="col-lg-7">
+      <div class="checkout-card">
+        <h5 class="checkout-section-title"><i class="bi bi-geo-alt me-2"></i>Delivery Details</h5>
+        <form method="post" id="checkoutForm">
+          {% csrf_token %}
+          <div class="row g-3">
+            <div class="col-md-6">
+              <label class="form-label">First Name</label>
+              {{ form.first_name }}
+              {% if form.first_name.errors %}<div class="invalid-feedback d-block">{{ form.first_name.errors.0 }}</div>{% endif %}
+            </div>
+            <div class="col-md-6">
+              <label class="form-label">Last Name</label>
+              {{ form.last_name }}
+              {% if form.last_name.errors %}<div class="invalid-feedback d-block">{{ form.last_name.errors.0 }}</div>{% endif %}
+            </div>
+            <div class="col-md-6">
+              <label class="form-label">Email Address</label>
+              {{ form.email }}
+              {% if form.email.errors %}<div class="invalid-feedback d-block">{{ form.email.errors.0 }}</div>{% endif %}
+            </div>
+            <div class="col-md-6">
+              <label class="form-label">Phone (M-Pesa)</label>
+              {{ form.phone }}
+              {% if form.phone.errors %}<div class="invalid-feedback d-block">{{ form.phone.errors.0 }}</div>{% endif %}
+            </div>
+            <div class="col-12">
+              <label class="form-label">Delivery Address</label>
+              {{ form.address }}
+            </div>
+            <div class="col-md-6">
+              <label class="form-label">Town / City</label>
+              {{ form.city }}
+            </div>
+            <div class="col-md-6">
+              <label class="form-label">County</label>
+              {{ form.county }}
+            </div>
+            <div class="col-md-6">
+              <label class="form-label">Postal Code <span class="text-muted small">(optional)</span></label>
+              {{ form.postal_code }}
+            </div>
+            <div class="col-12">
+              <label class="form-label">Order Notes <span class="text-muted small">(optional)</span></label>
+              {{ form.notes }}
+            </div>
+          </div>
+
+          <!-- Payment method -->
+          <div class="mt-4">
+            <h5 class="checkout-section-title"><i class="bi bi-phone-fill me-2"></i>Payment Method</h5>
+            <div class="payment-method-card selected">
+              <i class="bi bi-phone-fill text-success me-2"></i>
+              <strong>M-Pesa STK Push</strong>
+              <span class="text-muted small ms-2">– Enter PIN on your phone</span>
+              <i class="bi bi-check-circle-fill text-success ms-auto"></i>
+            </div>
+          </div>
+
+          <button type="submit" class="btn btn-hero-primary w-100 mt-4" id="placeOrderBtn">
+            <i class="bi bi-bag-check-fill me-2"></i>Place Order
+          </button>
+        </form>
+      </div>
+    </div>
+
+    <!-- Order Summary -->
+    <div class="col-lg-5">
+      <div class="summary-card sticky-top" style="top:90px;">
+        <h5 class="summary-title"><i class="bi bi-cart3 me-2"></i>Order Summary</h5>
+        {% for item in cart %}
+        <div class="checkout-item">
+          <img src="{{ item.product.image_url|default:'https://placehold.co/50x50/1a1a2e/00d4ff?text=P' }}"
+               alt="{{ item.product.name }}" class="checkout-item-img"
+               onerror="this.src='https://placehold.co/50x50/1a1a2e/00d4ff?text=P'" />
+          <div class="flex-grow-1">
+            <div class="small fw-semibold">{{ item.product.name|truncatechars:40 }}</div>
+            <div class="text-muted x-small">Qty: {{ item.quantity }}</div>
+          </div>
+          <div class="small fw-bold">{{ item.total_price|currency_kes }}</div>
+        </div>
+        {% endfor %}
+        <hr class="border-secondary" />
+        <div class="summary-row"><span>Subtotal</span><span>{{ cart.get_total_price|currency_kes }}</span></div>
+        <div class="summary-row"><span>Delivery</span><span class="text-success">Free</span></div>
+        <div class="summary-total">
+          <span>Total to Pay</span>
+          <span class="text-accent">{{ cart.get_total_price|currency_kes }}</span>
+        </div>
+        <div class="mt-3 p-3 mpesa-note">
+          <i class="bi bi-info-circle me-1"></i>
+          After placing your order, you will receive an M-Pesa STK Push on your phone. Enter your PIN to complete payment.
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+{% endblock %}

@@ -1,0 +1,16 @@
+{% extends 'base.html' %}
+{% block title %}Sign Out – TechStore KE{% endblock %}
+{% block content %}
+<div class="container py-5 text-center" style="max-width:400px;">
+  <div class="auth-card">
+    <i class="bi bi-box-arrow-right display-3 text-accent mb-3"></i>
+    <h4>Sign Out?</h4>
+    <p class="text-muted">Are you sure you want to sign out of TechStore KE?</p>
+    <form method="post" action="{% url 'account_logout' %}">
+      {% csrf_token %}
+      <button type="submit" class="btn btn-danger me-2">Yes, Sign Out</button>
+      <a href="{% url 'store:home' %}" class="btn btn-outline-secondary">Cancel</a>
+    </form>
+  </div>
+</div>
+{% endblock %}

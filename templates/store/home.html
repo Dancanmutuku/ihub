@@ -1,0 +1,182 @@
+{% extends 'base.html' %}
+{% load static store_tags %}
+
+{% block content %}
+
+<!-- ── HERO ───────────────────────────────────────────── -->
+<section class="hero-section">
+  <div class="hero-bg-grid"></div>
+  <div class="container-fluid px-4 py-5">
+    <div class="row align-items-center min-vh-60 g-5">
+      <div class="col-lg-6" data-aos="fade-right">
+        <div class="hero-eyebrow"><i class="bi bi-lightning-charge-fill me-2 text-warning"></i>New Arrivals In Stock</div>
+        <h1 class="hero-headline">
+          Level Up Your<br />
+          <span class="text-gradient">Build.</span>
+        </h1>
+        <p class="hero-sub">Top-tier GPUs, ultra-fast RAM, enterprise NICs and the latest tech gadgets — shipped across Kenya.</p>
+        <div class="d-flex gap-3 flex-wrap mt-4">
+          <a href="{% url 'store:product_list' %}" class="btn btn-hero-primary">
+            <i class="bi bi-grid-3x3-gap-fill me-2"></i>Shop All Products
+          </a>
+          <a href="{% url 'store:product_list' %}?sort=price" class="btn btn-hero-outline">
+            <i class="bi bi-tag-fill me-2"></i>View Deals
+          </a>
+        </div>
+        <!-- Trust badges -->
+        <div class="trust-badges mt-5">
+          <div class="trust-item"><i class="bi bi-shield-check-fill"></i><span>Genuine Products</span></div>
+          <div class="trust-item"><i class="bi bi-truck"></i><span>Nairobi Delivery</span></div>
+          <div class="trust-item"><i class="bi bi-arrow-counterclockwise"></i><span>7-Day Returns</span></div>
+        </div>
+      </div>
+      <div class="col-lg-6 d-none d-lg-block text-center">
+        <div class="hero-img-wrap">
+          <img src="https://images.unsplash.com/photo-1591405351990-4726e331f141?w=700&q=80"
+               alt="High-end GPU" class="hero-img img-fluid" />
+          <div class="hero-glow"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── CATEGORY PILLS ─────────────────────────────────── -->
+<section class="py-4 category-strip">
+  <div class="container-fluid px-4">
+    <div class="d-flex gap-3 overflow-auto pb-2 category-scroll">
+      <a href="{% url 'store:product_list' %}" class="category-pill active-pill">
+        <i class="bi bi-collection-fill me-2"></i>All
+      </a>
+      {% for cat in categories %}
+      <a href="{{ cat.get_absolute_url }}" class="category-pill">
+        <i class="bi {{ cat.icon }} me-2"></i>{{ cat.name }}
+      </a>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+
+<!-- ── FEATURED PRODUCTS ───────────────────────────────── -->
+{% if featured_products %}
+<section class="py-5">
+  <div class="container-fluid px-4">
+    <div class="section-header">
+      <h2 class="section-title"><span class="text-gradient">Featured</span> Products</h2>
+      <a href="{% url 'store:product_list' %}" class="btn btn-outline-accent btn-sm">View All <i class="bi bi-arrow-right ms-1"></i></a>
+    </div>
+    <div class="row g-4 mt-2">
+      {% for product in featured_products %}
+      <div class="col-6 col-md-4 col-lg-3">
+        {% include 'includes/product_card.html' with product=product %}
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+{% endif %}
+
+<!-- ── PROMO BANNER ────────────────────────────────────── -->
+<section class="py-4">
+  <div class="container-fluid px-4">
+    <div class="promo-banner">
+      <div class="promo-content">
+        <div>
+          <h3 class="promo-title">🔥 Flash Sale – Up to 30% Off</h3>
+          <p class="promo-sub mb-0">Limited stock on select GPUs and RAM kits. Don't miss out.</p>
+        </div>
+        <a href="{% url 'store:product_list' %}" class="btn btn-promo">Shop Now <i class="bi bi-arrow-right ms-1"></i></a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── NEW ARRIVALS ────────────────────────────────────── -->
+{% if new_arrivals %}
+<section class="py-5">
+  <div class="container-fluid px-4">
+    <div class="section-header">
+      <h2 class="section-title"><span class="text-gradient">New</span> Arrivals</h2>
+      <a href="{% url 'store:product_list' %}?sort=-created" class="btn btn-outline-accent btn-sm">See More <i class="bi bi-arrow-right ms-1"></i></a>
+    </div>
+    <div class="row g-4 mt-2">
+      {% for product in new_arrivals %}
+      <div class="col-6 col-md-4 col-lg-3">
+        {% include 'includes/product_card.html' with product=product %}
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+{% endif %}
+
+<!-- ── STATS STRIP ─────────────────────────────────────── -->
+<section class="stats-strip py-5 my-4">
+  <div class="container-fluid px-4">
+    <div class="row g-4 text-center">
+      <div class="col-6 col-md-3">
+        <div class="stat-card">
+          <div class="stat-number">2,400+</div>
+          <div class="stat-label">Products</div>
+        </div>
+      </div>
+      <div class="col-6 col-md-3">
+        <div class="stat-card">
+          <div class="stat-number">15K+</div>
+          <div class="stat-label">Happy Customers</div>
+        </div>
+      </div>
+      <div class="col-6 col-md-3">
+        <div class="stat-card">
+          <div class="stat-number">47</div>
+          <div class="stat-label">Counties Served</div>
+        </div>
+      </div>
+      <div class="col-6 col-md-3">
+        <div class="stat-card">
+          <div class="stat-number">4.9★</div>
+          <div class="stat-label">Avg Rating</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── WHY US ──────────────────────────────────────────── -->
+<section class="py-5">
+  <div class="container-fluid px-4">
+    <h2 class="section-title text-center mb-5">Why <span class="text-gradient">TechStore KE?</span></h2>
+    <div class="row g-4">
+      <div class="col-md-3 col-6">
+        <div class="feature-card">
+          <div class="feature-icon"><i class="bi bi-shield-check-fill"></i></div>
+          <h6>100% Genuine</h6>
+          <p class="small text-muted">All products sourced directly from authorized distributors.</p>
+        </div>
+      </div>
+      <div class="col-md-3 col-6">
+        <div class="feature-card">
+          <div class="feature-icon"><i class="bi bi-phone-fill"></i></div>
+          <h6>M-Pesa Payments</h6>
+          <p class="small text-muted">Secure STK Push payments — no card required.</p>
+        </div>
+      </div>
+      <div class="col-md-3 col-6">
+        <div class="feature-card">
+          <div class="feature-icon"><i class="bi bi-truck"></i></div>
+          <h6>Nationwide Delivery</h6>
+          <p class="small text-muted">Same-day delivery in Nairobi. Countrywide via courier.</p>
+        </div>
+      </div>
+      <div class="col-md-3 col-6">
+        <div class="feature-card">
+          <div class="feature-icon"><i class="bi bi-headset"></i></div>
+          <h6>Expert Support</h6>
+          <p class="small text-muted">Our techs help you choose the right gear for your build.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+{% endblock %}

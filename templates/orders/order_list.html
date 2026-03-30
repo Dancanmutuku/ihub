@@ -1,0 +1,43 @@
+{% extends 'base.html' %}
+{% load store_tags %}
+{% block title %}My Orders – TechStore KE{% endblock %}
+{% block content %}
+<div class="container-fluid px-4 py-4">
+  <h3 class="section-title mb-4"><i class="bi bi-box-seam me-2"></i>My <span class="text-gradient">Orders</span></h3>
+  {% if orders %}
+  <div class="orders-list">
+    {% for order in orders %}
+    <div class="order-row">
+      <div class="order-id">#{{ order.id }}</div>
+      <div class="order-meta">
+        <div class="fw-semibold">{{ order.created|date:"d M Y" }}</div>
+        <div class="text-muted small">{{ order.items.count }} item{{ order.items.count|pluralize }}</div>
+      </div>
+      <div class="order-total fw-bold text-accent">{{ order.get_total_cost|currency_kes }}</div>
+      <div>
+        <span class="status-badge status-{{ order.status }}">{{ order.get_status_display }}</span>
+      </div>
+      <div>
+        {% if order.paid %}
+        <span class="badge bg-success"><i class="bi bi-check-circle me-1"></i>Paid</span>
+        {% else %}
+        <span class="badge bg-warning text-dark"><i class="bi bi-clock me-1"></i>Unpaid</span>
+        {% endif %}
+      </div>
+      <div>
+        <a href="{% url 'orders:order_detail' order.id %}" class="btn btn-sm btn-outline-accent">
+          View <i class="bi bi-arrow-right ms-1"></i>
+        </a>
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+  {% else %}
+  <div class="empty-state text-center py-5">
+    <i class="bi bi-box display-1 text-muted"></i>
+    <h5 class="mt-3">No orders yet</h5>
+    <a href="{% url 'store:product_list' %}" class="btn btn-accent mt-2">Start Shopping</a>
+  </div>
+  {% endif %}
+</div>
+{% endblock %}

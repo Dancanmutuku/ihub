@@ -1,0 +1,199 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en" data-bs-theme="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>{% block title %}TechStore KE – Premium PC Parts & Gadgets{% endblock %}</title>
+  <meta name="description" content="{% block meta_desc %}Kenya's top destination for PC components, GPUs, RAM, NICs and tech gadgets.{% endblock %}" />
+
+  <!-- Bootstrap 5 -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" />
+  <!-- Bootstrap Icons -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" />
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;700;900&family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet" />
+  <!-- Custom CSS -->
+  <link rel="stylesheet" href="{% static 'css/custom.css' %}" />
+  {% block extra_head %}{% endblock %}
+</head>
+<body>
+
+<!-- ── TOP BAR ─────────────────────────────────────────── -->
+<div class="topbar">
+  <div class="container-fluid px-4">
+    <div class="d-flex justify-content-between align-items-center">
+      <span><i class="bi bi-lightning-charge-fill text-warning me-1"></i>Free delivery on orders over KES 5,000</span>
+      <span class="d-none d-md-inline"><i class="bi bi-headset me-1"></i>Support: +254 700 000 000</span>
+    </div>
+  </div>
+</div>
+
+<!-- ── NAVBAR ──────────────────────────────────────────── -->
+<nav class="navbar navbar-expand-lg sticky-top main-navbar" id="mainNav">
+  <div class="container-fluid px-4">
+    <!-- Brand -->
+    <a class="navbar-brand" href="{% url 'store:home' %}">
+      <span class="brand-icon"><i class="bi bi-cpu-fill"></i></span>
+      <span class="brand-text">Tech<span class="brand-accent">Store</span></span>
+      <span class="brand-ke">KE</span>
+    </a>
+
+    <!-- Mobile cart + toggle -->
+    <div class="d-flex d-lg-none align-items-center gap-2">
+      <a href="{% url 'cart:cart_detail' %}" class="btn btn-icon position-relative">
+        <i class="bi bi-bag-fill"></i>
+        {% if cart|length > 0 %}
+        <span class="cart-badge">{{ cart|length }}</span>
+        {% endif %}
+      </a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarMain">
+        <i class="bi bi-grid-3x3-gap-fill"></i>
+      </button>
+    </div>
+
+    <div class="collapse navbar-collapse" id="navbarMain">
+      <!-- Search -->
+      <form class="search-form mx-lg-4 flex-grow-1" action="{% url 'store:search' %}" method="get">
+        <div class="input-group">
+          <input type="search" name="q" class="form-control search-input"
+                 placeholder="Search GPUs, RAM, CPUs, NIC…"
+                 value="{{ request.GET.q }}" autocomplete="off" />
+          <button class="btn btn-search" type="submit"><i class="bi bi-search"></i></button>
+        </div>
+      </form>
+
+      <!-- Right nav -->
+      <ul class="navbar-nav align-items-lg-center gap-1 ms-auto">
+        <!-- Categories dropdown -->
+        <li class="nav-item dropdown">
+          <a class="nav-link dropdown-toggle nav-link-accent" href="#" data-bs-toggle="dropdown">
+            <i class="bi bi-grid me-1"></i>Categories
+          </a>
+          <ul class="dropdown-menu dropdown-menu-dark dropdown-categories">
+            <li><a class="dropdown-item" href="{% url 'store:product_list' %}"><i class="bi bi-collection me-2"></i>All Products</a></li>
+            <li><hr class="dropdown-divider" /></li>
+            {% for cat in all_categories %}
+            <li>
+              <a class="dropdown-item" href="{{ cat.get_absolute_url }}">
+                <i class="bi {{ cat.icon }} me-2"></i>{{ cat.name }}
+              </a>
+            </li>
+            {% endfor %}
+          </ul>
+        </li>
+
+        <li class="nav-item"><a class="nav-link" href="{% url 'store:product_list' %}?sort=-created"><i class="bi bi-stars me-1"></i>New Arrivals</a></li>
+        <li class="nav-item"><a class="nav-link" href="{% url 'store:product_list' %}?original_price__isnull=false"><i class="bi bi-tag me-1"></i>Deals</a></li>
+
+        <!-- Auth -->
+        {% if user.is_authenticated %}
+        <li class="nav-item dropdown">
+          <a class="nav-link dropdown-toggle d-flex align-items-center gap-2" href="#" data-bs-toggle="dropdown">
+            <span class="user-avatar">{{ user.email|first|upper }}</span>
+            <span class="d-none d-lg-inline">{{ user.get_full_name|default:user.email|truncatechars:15 }}</span>
+          </a>
+          <ul class="dropdown-menu dropdown-menu-end dropdown-menu-dark">
+            <li><a class="dropdown-item" href="{% url 'orders:order_list' %}"><i class="bi bi-box-seam me-2"></i>My Orders</a></li>
+            <li><hr class="dropdown-divider" /></li>
+            <li><a class="dropdown-item text-danger" href="{% url 'account_logout' %}"><i class="bi bi-box-arrow-right me-2"></i>Sign Out</a></li>
+          </ul>
+        </li>
+        {% else %}
+        <li class="nav-item">
+          <a class="btn btn-outline-accent btn-sm" href="{% url 'account_login' %}">
+            <i class="bi bi-person-fill me-1"></i>Sign In
+          </a>
+        </li>
+        {% endif %}
+
+        <!-- Cart -->
+        <li class="nav-item d-none d-lg-block">
+          <a href="{% url 'cart:cart_detail' %}" class="btn btn-cart position-relative">
+            <i class="bi bi-bag-fill me-1"></i>Cart
+            {% if cart|length > 0 %}
+            <span class="cart-badge">{{ cart|length }}</span>
+            {% endif %}
+          </a>
+        </li>
+      </ul>
+    </div>
+  </div>
+</nav>
+
+<!-- ── MESSAGES ────────────────────────────────────────── -->
+{% if messages %}
+<div class="container-fluid px-4 mt-2">
+  {% for message in messages %}
+  <div class="alert alert-{{ message.tags|default:'info' }} alert-dismissible fade show py-2" role="alert">
+    {{ message }}
+    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+  </div>
+  {% endfor %}
+</div>
+{% endif %}
+
+<!-- ── PAGE CONTENT ────────────────────────────────────── -->
+<main>
+  {% block content %}{% endblock %}
+</main>
+
+<!-- ── FOOTER ─────────────────────────────────────────── -->
+<footer class="site-footer mt-5">
+  <div class="container-fluid px-4 py-5">
+    <div class="row g-4">
+      <div class="col-lg-4">
+        <div class="footer-brand mb-3">
+          <i class="bi bi-cpu-fill me-2"></i>TechStore KE
+        </div>
+        <p class="text-muted small">Kenya's premier destination for cutting-edge PC components, networking hardware, and the latest tech gadgets. Powered by performance.</p>
+        <div class="social-links mt-3">
+          <a href="#"><i class="bi bi-twitter-x"></i></a>
+          <a href="#"><i class="bi bi-instagram"></i></a>
+          <a href="#"><i class="bi bi-facebook"></i></a>
+          <a href="#"><i class="bi bi-youtube"></i></a>
+        </div>
+      </div>
+      <div class="col-6 col-lg-2">
+        <h6 class="footer-heading">Shop</h6>
+        <ul class="list-unstyled footer-links">
+          {% for cat in all_categories %}
+          <li><a href="{{ cat.get_absolute_url }}">{{ cat.name }}</a></li>
+          {% endfor %}
+        </ul>
+      </div>
+      <div class="col-6 col-lg-2">
+        <h6 class="footer-heading">Account</h6>
+        <ul class="list-unstyled footer-links">
+          <li><a href="{% url 'account_login' %}">Sign In</a></li>
+          <li><a href="{% url 'account_signup' %}">Register</a></li>
+          <li><a href="{% url 'orders:order_list' %}">My Orders</a></li>
+        </ul>
+      </div>
+      <div class="col-lg-4">
+        <h6 class="footer-heading">Secure Payments</h6>
+        <div class="payment-badges mb-3">
+          <span class="payment-badge"><i class="bi bi-phone-fill me-1"></i>M-Pesa</span>
+          <span class="payment-badge"><i class="bi bi-shield-check me-1"></i>Secure</span>
+          <span class="payment-badge"><i class="bi bi-lock-fill me-1"></i>SSL</span>
+        </div>
+        <p class="text-muted small"><i class="bi bi-geo-alt-fill me-1 text-accent"></i>Nairobi, Kenya</p>
+        <p class="text-muted small"><i class="bi bi-envelope-fill me-1 text-accent"></i>support@techstore.co.ke</p>
+      </div>
+    </div>
+    <hr class="footer-divider my-4" />
+    <div class="d-flex flex-column flex-md-row justify-content-between align-items-center text-muted small">
+      <span>&copy; {% now "Y" %} TechStore KE. All rights reserved.</span>
+      <span class="mt-2 mt-md-0">Built with <i class="bi bi-heart-fill text-danger mx-1"></i>in Nairobi</span>
+    </div>
+  </div>
+</footer>
+
+<!-- ── SCRIPTS ─────────────────────────────────────────── -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script src="{% static 'js/main.js' %}"></script>
+{% block extra_scripts %}{% endblock %}
+</body>
+</html>

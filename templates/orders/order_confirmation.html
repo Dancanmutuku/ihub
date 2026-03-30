@@ -1,0 +1,25 @@
+{% extends 'base.html' %}
+{% load store_tags %}
+{% block title %}Order Confirmed – TechStore KE{% endblock %}
+{% block content %}
+<div class="container py-5 text-center" style="max-width:600px;">
+  <div class="confirmation-icon"><i class="bi bi-bag-check-fill"></i></div>
+  <h2 class="mt-4 mb-2">Order Confirmed!</h2>
+  <p class="text-muted mb-4">Thank you, <strong>{{ order.full_name }}</strong>. Your order <strong>#{{ order.id }}</strong> has been placed successfully.</p>
+
+  <div class="summary-card text-start mb-4">
+    <div class="summary-row"><span>Order ID</span><span class="text-accent fw-bold">#{{ order.id }}</span></div>
+    <div class="summary-row"><span>Total</span><span class="fw-bold">{{ order.get_total_cost|currency_kes }}</span></div>
+    <div class="summary-row"><span>Payment</span>
+      <span>{% if order.paid %}<span class="text-success"><i class="bi bi-check-circle me-1"></i>Paid via M-Pesa</span>{% else %}<span class="text-warning">Pending Payment</span>{% endif %}</span>
+    </div>
+    {% if order.mpesa_code %}
+    <div class="summary-row"><span>M-Pesa Receipt</span><span class="text-accent">{{ order.mpesa_code }}</span></div>
+    {% endif %}
+    <div class="summary-row"><span>Delivery to</span><span>{{ order.city }}, {{ order.county }}</span></div>
+  </div>
+
+  <a href="{% url 'orders:order_list' %}" class="btn btn-outline-accent me-2"><i class="bi bi-box-seam me-1"></i>My Orders</a>
+  <a href="{% url 'store:home' %}" class="btn btn-hero-primary"><i class="bi bi-grid me-1"></i>Continue Shopping</a>
+</div>
+{% endblock %}

@@ -1,0 +1,39 @@
+{% extends 'base.html' %}
+{% block title %}Wishlist - TechVault{% endblock %}
+{% block content %}
+<div class="page-header">
+    <div class="container"><h1><i class="fas fa-heart me-3" style="color:var(--accent)"></i>WISHLIST</h1></div>
+</div>
+<div class="container py-4">
+    {% if items %}
+    <div class="row g-3">
+        {% for item in items %}
+        <div class="col-6 col-md-4 col-lg-3">
+            <div class="product-card">
+                <a href="{% url 'product_detail' item.product.slug %}">
+                    <img src="{{ item.product.image_url }}" class="card-img-top w-100" alt="{{ item.product.name }}" onerror="this.src='https://images.unsplash.com/photo-1518770660439-4636190af475?w=400&q=60'">
+                </a>
+                <div class="card-body">
+                    {% if item.product.brand %}<div class="brand-tag">{{ item.product.brand }}</div>{% endif %}
+                    <h6 style="color:white;font-weight:600;font-size:0.9rem"><a href="{% url 'product_detail' item.product.slug %}" style="color:white;text-decoration:none">{{ item.product.name }}</a></h6>
+                    <div class="price mb-2">KSh {{ item.product.price|floatformat:0 }}</div>
+                    <div class="d-flex gap-2">
+                        {% if item.product.stock > 0 %}
+                        <a href="{% url 'add_to_cart' item.product.id %}" class="btn-primary-custom flex-grow-1 text-center" style="text-decoration:none;padding:0.4rem;font-size:0.85rem"><i class="fas fa-cart-plus me-1"></i>Add</a>
+                        {% endif %}
+                        <a href="{% url 'toggle_wishlist' item.product.id %}" class="btn-outline-custom" style="padding:0.4rem 0.7rem;font-size:0.85rem;color:var(--accent);border-color:var(--accent)"><i class="fas fa-trash"></i></a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    {% else %}
+    <div class="text-center py-5">
+        <i class="fas fa-heart" style="font-size:4rem;color:var(--border);margin-bottom:1.5rem"></i>
+        <h4 style="color:var(--text-dim)">Your wishlist is empty</h4>
+        <a href="{% url 'product_list' %}" class="btn-primary-custom mt-3" style="text-decoration:none;padding:0.7rem 2rem">Browse Products</a>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}
