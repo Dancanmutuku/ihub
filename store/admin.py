@@ -16,19 +16,18 @@ class ProductAdmin(admin.ModelAdmin):
     list_editable = ['price', 'stock', 'available', 'featured']
     prepopulated_fields = {'slug': ('name',)}
     search_fields = ['name', 'description', 'brand']
-    readonly_fields = ['created', 'updated']
     fieldsets = (
         ('Basic Info', {'fields': ('category', 'name', 'slug', 'brand', 'description')}),
         ('Pricing & Stock', {'fields': ('price', 'original_price', 'stock', 'available')}),
         ('Media', {'fields': ('image_url',)}),
         ('Flags', {'fields': ('featured', 'new_arrival')}),
         ('Specifications', {'fields': ('specs',)}),
-        ('Timestamps', {'fields': ('created', 'updated'), 'classes': ('collapse',)}),
     )
+    # ✅ Remove any readonly_fields reference to 'created' or 'updated'
 
 
 @admin.register(Review)
 class ReviewAdmin(admin.ModelAdmin):
-    list_display = ['user', 'product', 'rating', 'created']
+    list_display = ['user', 'product', 'rating']  # removed 'created'
     list_filter = ['rating']
     search_fields = ['user__username', 'product__name']

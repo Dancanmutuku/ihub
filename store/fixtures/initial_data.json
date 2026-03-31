@@ -2,15 +2,20 @@
   {
     "model": "sites.site",
     "pk": 1,
-    "fields": { "domain": "localhost:8000", "name": "TechStore KE" }
+    "fields": {
+      "domain": "localhost:8000",
+      "name": "TechStore KE"
+    }
   },
   {
     "model": "store.category",
     "pk": 1,
     "fields": {
-      "name": "Graphics Cards", "slug": "graphics-cards",
+      "name": "Graphics Cards",
+      "slug": "graphics-cards",
       "description": "Powerful GPUs for gaming and content creation",
-      "icon": "bi-gpu-card", "order": 1,
+      "icon": "bi-gpu-card",
+      "order": 1,
       "image_url": "https://images.unsplash.com/photo-1591405351990-4726e331f141?w=400&q=75"
     }
   },
@@ -18,230 +23,66 @@
     "model": "store.category",
     "pk": 2,
     "fields": {
-      "name": "RAM / Memory", "slug": "ram-memory",
+      "name": "RAM / Memory",
+      "slug": "ram-memory",
       "description": "DDR4 & DDR5 memory modules for every build",
-      "icon": "bi-memory", "order": 2,
+      "icon": "bi-memory",
+      "order": 2,
       "image_url": "https://images.unsplash.com/photo-1562976540-1502c2145871?w=400&q=75"
-    }
-  },
-  {
-    "model": "store.category",
-    "pk": 3,
-    "fields": {
-      "name": "Network Cards (NIC)", "slug": "network-cards",
-      "description": "Gigabit and 10GbE NICs for home and enterprise",
-      "icon": "bi-ethernet", "order": 3,
-      "image_url": "https://images.unsplash.com/photo-1558494949-ef010cbdcc31?w=400&q=75"
-    }
-  },
-  {
-    "model": "store.category",
-    "pk": 4,
-    "fields": {
-      "name": "CPUs & Processors", "slug": "cpus",
-      "description": "Intel and AMD processors for every workload",
-      "icon": "bi-cpu-fill", "order": 4,
-      "image_url": "https://images.unsplash.com/photo-1555617981-dac3772603e5?w=400&q=75"
-    }
-  },
-  {
-    "model": "store.category",
-    "pk": 5,
-    "fields": {
-      "name": "Storage (SSD/HDD)", "slug": "storage",
-      "description": "NVMe SSDs, SATA SSDs, and HDDs",
-      "icon": "bi-device-hdd-fill", "order": 5,
-      "image_url": "https://images.unsplash.com/photo-1597872200969-2b65d56bd16b?w=400&q=75"
-    }
-  },
-  {
-    "model": "store.category",
-    "pk": 6,
-    "fields": {
-      "name": "Laptops & Gadgets", "slug": "laptops-gadgets",
-      "description": "Laptops, accessories and everyday tech gadgets",
-      "icon": "bi-laptop-fill", "order": 6,
-      "image_url": "https://images.unsplash.com/photo-1517336714731-489689fd1ca8?w=400&q=75"
     }
   },
   {
     "model": "store.product",
     "pk": 1,
     "fields": {
-      "category": 1, "name": "NVIDIA GeForce RTX 4070 Ti 12GB", "slug": "rtx-4070-ti",
+      "category": 1,
+      "name": "NVIDIA GeForce RTX 4070 Ti 12GB",
+      "slug": "rtx-4070-ti",
       "description": "The RTX 4070 Ti delivers exceptional 4K gaming performance with DLSS 3 and ray tracing. Perfect for AAA gaming and 3D rendering workloads.",
-      "price": "95000.00", "original_price": "110000.00",
+      "price": "95000.00",
+      "original_price": "110000.00",
       "image_url": "https://images.unsplash.com/photo-1591405351990-4726e331f141?w=600&q=80",
-      "stock": 5, "available": true, "featured": true, "new_arrival": false, "brand": "NVIDIA",
-      "specs": {"VRAM": "12GB GDDR6X", "Memory Bus": "192-bit", "TDP": "285W", "Connectors": "3x DisplayPort 1.4a, 1x HDMI 2.1", "Interface": "PCIe 4.0 x16", "Clock Speed": "2310 MHz Boost"}
+      "stock": 5,
+      "available": true,
+      "featured": true,
+      "new_arrival": false,
+      "brand": "NVIDIA",
+      "specs": {
+        "VRAM": "12GB GDDR6X",
+        "Memory Bus": "192-bit",
+        "TDP": "285W",
+        "Interface": "PCIe 4.0 x16",
+        "Boost Clock": "2310 MHz"
+      },
+      "created": "2026-03-30T12:10:00Z",
+      "updated": "2026-03-30T12:10:00Z"
     }
   },
   {
     "model": "store.product",
     "pk": 2,
     "fields": {
-      "category": 1, "name": "AMD Radeon RX 7800 XT 16GB", "slug": "rx-7800-xt",
-      "description": "AMD's RDNA 3 architecture brings the RX 7800 XT with 16GB GDDR6 memory, ideal for 1440p gaming at ultra settings.",
-      "price": "72000.00", "original_price": null,
+      "category": 1,
+      "name": "AMD Radeon RX 7800 XT 16GB",
+      "slug": "rx-7800-xt",
+      "description": "AMD RDNA 3 architecture with 16GB GDDR6 memory, ideal for 1440p gaming at ultra settings.",
+      "price": "72000.00",
+      "original_price": null,
       "image_url": "https://images.unsplash.com/photo-1587202372775-e229f172b9d7?w=600&q=80",
-      "stock": 8, "available": true, "featured": true, "new_arrival": true, "brand": "AMD",
-      "specs": {"VRAM": "16GB GDDR6", "Memory Bus": "256-bit", "TDP": "263W", "Connectors": "2x DisplayPort 2.1, 1x HDMI 2.1", "Interface": "PCIe 4.0 x16", "Clock Speed": "2430 MHz Boost"}
-    }
-  },
-  {
-    "model": "store.product",
-    "pk": 3,
-    "fields": {
-      "category": 1, "name": "NVIDIA GeForce RTX 4060 8GB", "slug": "rtx-4060",
-      "description": "Entry-level powerhouse for 1080p and 1440p gaming. Features DLSS 3 Frame Generation and AV1 encode/decode for streaming.",
-      "price": "48500.00", "original_price": "55000.00",
-      "image_url": "https://images.unsplash.com/photo-1600348759986-a801b53b524c?w=600&q=80",
-      "stock": 12, "available": true, "featured": false, "new_arrival": true, "brand": "NVIDIA",
-      "specs": {"VRAM": "8GB GDDR6", "Memory Bus": "128-bit", "TDP": "115W", "Connectors": "3x DisplayPort 1.4a, 1x HDMI 2.1", "Interface": "PCIe 4.0 x16", "Clock Speed": "2460 MHz Boost"}
-    }
-  },
-  {
-    "model": "store.product",
-    "pk": 4,
-    "fields": {
-      "category": 2, "name": "Corsair Vengeance 32GB DDR5-5600", "slug": "corsair-vengeance-ddr5-32gb",
-      "description": "High-performance DDR5 memory kit designed for Intel 12th/13th Gen and AMD Ryzen 7000 platforms. Tight timings for maximum performance.",
-      "price": "18500.00", "original_price": "22000.00",
-      "image_url": "https://images.unsplash.com/photo-1562976540-1502c2145871?w=600&q=80",
-      "stock": 20, "available": true, "featured": true, "new_arrival": false, "brand": "Corsair",
-      "specs": {"Capacity": "32GB (2x16GB)", "Type": "DDR5", "Speed": "5600 MHz", "Latency": "CL36", "Voltage": "1.25V", "Form Factor": "DIMM"}
-    }
-  },
-  {
-    "model": "store.product",
-    "pk": 5,
-    "fields": {
-      "category": 2, "name": "Kingston Fury Beast 16GB DDR4-3200", "slug": "kingston-fury-beast-ddr4-16gb",
-      "description": "Plug-n-play DDR4 memory with aggressive heat spreader. Compatible with AMD and Intel platforms. Intel XMP ready.",
-      "price": "6800.00", "original_price": null,
-      "image_url": "https://images.unsplash.com/photo-1518770660439-4636190af475?w=600&q=80",
-      "stock": 35, "available": true, "featured": false, "new_arrival": false, "brand": "Kingston",
-      "specs": {"Capacity": "16GB (2x8GB)", "Type": "DDR4", "Speed": "3200 MHz", "Latency": "CL16", "Voltage": "1.35V", "Form Factor": "DIMM"}
-    }
-  },
-  {
-    "model": "store.product",
-    "pk": 6,
-    "fields": {
-      "category": 2, "name": "G.Skill Trident Z5 64GB DDR5-6000", "slug": "gskill-trident-z5-64gb",
-      "description": "Extreme overclocking DDR5 kit for enthusiast platforms. RGB lighting, aluminum heat spreader, hand-sorted ICs.",
-      "price": "42000.00", "original_price": "48000.00",
-      "image_url": "https://images.unsplash.com/photo-1593640408182-31c228a60c99?w=600&q=80",
-      "stock": 6, "available": true, "featured": true, "new_arrival": true, "brand": "G.Skill",
-      "specs": {"Capacity": "64GB (2x32GB)", "Type": "DDR5", "Speed": "6000 MHz", "Latency": "CL30", "Voltage": "1.35V", "Form Factor": "DIMM"}
-    }
-  },
-  {
-    "model": "store.product",
-    "pk": 7,
-    "fields": {
-      "category": 3, "name": "Intel X550-T2 10GbE Dual Port NIC", "slug": "intel-x550-t2-10gbe",
-      "description": "Enterprise-grade dual-port 10 Gigabit Ethernet NIC. Perfect for NAS servers, virtualization hosts, and demanding network workloads.",
-      "price": "28000.00", "original_price": null,
-      "image_url": "https://images.unsplash.com/photo-1558494949-ef010cbdcc31?w=600&q=80",
-      "stock": 10, "available": true, "featured": true, "new_arrival": false, "brand": "Intel",
-      "specs": {"Ports": "2x 10GbE RJ-45", "Interface": "PCIe 3.0 x4", "Protocol": "10GBASE-T", "OS Support": "Windows, Linux, VMware", "Flow Control": "Yes", "Jumbo Frames": "Up to 9.5KB"}
-    }
-  },
-  {
-    "model": "store.product",
-    "pk": 8,
-    "fields": {
-      "category": 3, "name": "TP-Link TG-3468 Gigabit PCIe NIC", "slug": "tplink-tg3468-gigabit",
-      "description": "Budget-friendly Gigabit Ethernet NIC for desktops. Easy plug-and-play installation, Wake-on-LAN support.",
-      "price": "1800.00", "original_price": "2200.00",
-      "image_url": "https://images.unsplash.com/photo-1606904825846-647eb07f5be2?w=600&q=80",
-      "stock": 50, "available": true, "featured": false, "new_arrival": false, "brand": "TP-Link",
-      "specs": {"Ports": "1x 1GbE RJ-45", "Interface": "PCIe x1", "Protocol": "1000BASE-T", "OS Support": "Windows, Linux", "Wake-on-LAN": "Yes", "Chipset": "Realtek RTL8168"}
-    }
-  },
-  {
-    "model": "store.product",
-    "pk": 9,
-    "fields": {
-      "category": 4, "name": "AMD Ryzen 9 7950X 16-Core Processor", "slug": "ryzen-9-7950x",
-      "description": "AMD's flagship desktop processor with 16 cores and 32 threads. Built on Zen 4 architecture with 5nm process for massive multi-threaded performance.",
-      "price": "85000.00", "original_price": "95000.00",
-      "image_url": "https://images.unsplash.com/photo-1555617981-dac3772603e5?w=600&q=80",
-      "stock": 4, "available": true, "featured": true, "new_arrival": false, "brand": "AMD",
-      "specs": {"Cores": "16", "Threads": "32", "Base Clock": "4.5 GHz", "Boost Clock": "5.7 GHz", "TDP": "170W", "Socket": "AM5", "Cache": "64MB L3", "Architecture": "Zen 4"}
-    }
-  },
-  {
-    "model": "store.product",
-    "pk": 10,
-    "fields": {
-      "category": 4, "name": "Intel Core i7-13700K 16-Core Processor", "slug": "i7-13700k",
-      "description": "Intel's 13th Gen hybrid architecture with 8 P-cores and 8 E-cores. Exceptional gaming performance and multi-threaded capabilities.",
-      "price": "62000.00", "original_price": null,
-      "image_url": "https://images.unsplash.com/photo-1591799265444-d66432b91588?w=600&q=80",
-      "stock": 7, "available": true, "featured": true, "new_arrival": true, "brand": "Intel",
-      "specs": {"Cores": "16 (8P+8E)", "Threads": "24", "Base Clock": "3.4 GHz", "Boost Clock": "5.4 GHz", "TDP": "125W", "Socket": "LGA1700", "Cache": "30MB L3", "Architecture": "Raptor Lake"}
-    }
-  },
-  {
-    "model": "store.product",
-    "pk": 11,
-    "fields": {
-      "category": 5, "name": "Samsung 990 Pro 2TB NVMe SSD", "slug": "samsung-990-pro-2tb",
-      "description": "PCIe 4.0 NVMe SSD with blazing-fast sequential read speeds up to 7,450 MB/s. Ideal for gaming, content creation, and OS drives.",
-      "price": "22000.00", "original_price": "26000.00",
-      "image_url": "https://images.unsplash.com/photo-1597872200969-2b65d56bd16b?w=600&q=80",
-      "stock": 15, "available": true, "featured": true, "new_arrival": false, "brand": "Samsung",
-      "specs": {"Capacity": "2TB", "Interface": "PCIe 4.0 NVMe M.2", "Read": "7,450 MB/s", "Write": "6,900 MB/s", "NAND": "Samsung V-NAND TLC", "Warranty": "5 Years"}
-    }
-  },
-  {
-    "model": "store.product",
-    "pk": 12,
-    "fields": {
-      "category": 5, "name": "WD Black SN850X 1TB NVMe SSD", "slug": "wd-black-sn850x-1tb",
-      "description": "Purpose-built for gaming with PCIe Gen 4, Game Mode 2.0 technology for ultra-responsive gameplay.",
-      "price": "14500.00", "original_price": null,
-      "image_url": "https://images.unsplash.com/photo-1563770660941-10a63607f434?w=600&q=80",
-      "stock": 18, "available": true, "featured": false, "new_arrival": true, "brand": "Western Digital",
-      "specs": {"Capacity": "1TB", "Interface": "PCIe 4.0 NVMe M.2", "Read": "7,300 MB/s", "Write": "6,300 MB/s", "NAND": "WD 3D NAND TLC", "Warranty": "5 Years"}
-    }
-  },
-  {
-    "model": "store.product",
-    "pk": 13,
-    "fields": {
-      "category": 6, "name": "Lenovo ThinkPad X1 Carbon Gen 11", "slug": "thinkpad-x1-carbon-gen11",
-      "description": "Ultra-light business laptop at just 1.12kg. Intel Core i7-1365U, 32GB LPDDR5, 1TB SSD, stunning 14\" IPS display with Dolby Vision.",
-      "price": "185000.00", "original_price": "210000.00",
-      "image_url": "https://images.unsplash.com/photo-1517336714731-489689fd1ca8?w=600&q=80",
-      "stock": 3, "available": true, "featured": true, "new_arrival": false, "brand": "Lenovo",
-      "specs": {"CPU": "Intel Core i7-1365U", "RAM": "32GB LPDDR5", "Storage": "1TB NVMe SSD", "Display": "14\" 2.8K IPS, 120Hz", "Weight": "1.12kg", "Battery": "57Wh", "OS": "Windows 11 Pro"}
-    }
-  },
-  {
-    "model": "store.product",
-    "pk": 14,
-    "fields": {
-      "category": 6, "name": "Logitech MX Master 3S Wireless Mouse", "slug": "logitech-mx-master-3s",
-      "description": "The ultimate productivity mouse with 8K DPI MagSpeed scroll wheel, quiet clicks, and multi-device Bluetooth connectivity.",
-      "price": "12500.00", "original_price": "14000.00",
-      "image_url": "https://images.unsplash.com/photo-1527864550417-7fd91fc51a46?w=600&q=80",
-      "stock": 25, "available": true, "featured": false, "new_arrival": true, "brand": "Logitech",
-      "specs": {"Sensor": "Darkfield 8000 DPI", "Connectivity": "Bluetooth / USB Receiver", "Battery": "70-day charge", "Buttons": "7 programmable", "OS": "Windows, macOS, Linux", "Weight": "141g"}
-    }
-  },
-  {
-    "model": "store.product",
-    "pk": 15,
-    "fields": {
-      "category": 6, "name": "Anker 727 Charging Station 100W", "slug": "anker-727-charging-station",
-      "description": "6-port charging station with 2 USB-C (100W total) and 4 USB-A ports. Power your entire desk setup simultaneously.",
-      "price": "5800.00", "original_price": null,
-      "image_url": "https://images.unsplash.com/photo-1609091839311-d5365f9ff1c5?w=600&q=80",
-      "stock": 40, "available": true, "featured": false, "new_arrival": true, "brand": "Anker",
-      "specs": {"Total Power": "100W", "USB-C Ports": "2", "USB-A Ports": "4", "Fast Charge": "Yes (Power Delivery)", "Input": "100-240V", "Dimensions": "11.5 x 7.3 x 3.6cm"}
+      "stock": 8,
+      "available": true,
+      "featured": true,
+      "new_arrival": true,
+      "brand": "AMD",
+      "specs": {
+        "VRAM": "16GB GDDR6",
+        "Memory Bus": "256-bit",
+        "TDP": "263W",
+        "Interface": "PCIe 4.0 x16",
+        "Boost Clock": "2430 MHz"
+      },
+      "created": "2026-03-30T12:15:00Z",
+      "updated": "2026-03-30T12:15:00Z"
     }
   }
 ]

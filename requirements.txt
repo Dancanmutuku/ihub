@@ -1,7 +1,8 @@
-Django==5.0.4
+Django>=5.0,<5.2
 django-allauth==0.63.3
 python-decouple==3.8
-Pillow==10.3.0
+Pillow>=10.4.0
 requests==2.31.0
 django-crispy-forms==2.1
 crispy-bootstrap5==2024.2
+python-dotenv
