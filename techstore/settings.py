@@ -6,7 +6,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # ── Security ─────────────────────────────────────────────────
 SECRET_KEY = config('SECRET_KEY', default='django-insecure-change-me-in-production')
 DEBUG = config('DEBUG', default=True, cast=bool)
-ALLOWED_HOSTS = config('ALLOWED_HOSTS', default='localhost,127.0.0.1', cast=Csv())
+ALLOWED_HOSTS = config('ALLOWED_HOSTS', default='localhost,127.0.0.1,lienable-fonda-apprehensively.ngrok-free.dev', cast=Csv())
 
 # ── Installed Apps ───────────────────────────────────────────
 INSTALLED_APPS = [
@@ -40,6 +40,7 @@ MIDDLEWARE = [
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
 
+    'allauth.account.middleware.AccountMiddleware',  # ADD THIS
     'allauth.account.middleware.AccountMiddleware',  # ADD THIS
 
     'django.contrib.messages.middleware.MessageMiddleware',
@@ -144,7 +145,7 @@ MPESA_CONSUMER_KEY = config('MPESA_CONSUMER_KEY', default='')
 MPESA_CONSUMER_SECRET = config('MPESA_CONSUMER_SECRET', default='')
 MPESA_SHORTCODE = config('MPESA_SHORTCODE', default='174379')
 MPESA_PASSKEY = config('MPESA_PASSKEY', default='')
-MPESA_CALLBACK_URL = config('MPESA_CALLBACK_URL', default='https://yourdomain.com/payments/mpesa/callback/')
+MPESA_CALLBACK_URL = config('MPESA_CALLBACK_URL', default='https://lienable-fonda-apprehensively.ngrok-free.dev/payments/mpesa-callback/')
 MPESA_ENVIRONMENT = config('MPESA_ENVIRONMENT', default='sandbox')
 
 # ── Email ────────────────────────────────────────────────────
