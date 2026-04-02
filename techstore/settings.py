@@ -42,6 +42,8 @@ MIDDLEWARE = [
 
     'allauth.account.middleware.AccountMiddleware',  # ADD THIS
     'allauth.account.middleware.AccountMiddleware',  # ADD THIS
+    "django.middleware.security.SecurityMiddleware",
+    "whitenoise.middleware.WhiteNoiseMiddleware"
 
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
