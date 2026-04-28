@@ -1,6 +1,8 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
+from django.contrib.admin.views.decorators import staff_member_required
+from django.utils import timezone
 from cart.cart import Cart
 from .models import Order, OrderItem
 from .forms import OrderCreateForm
@@ -52,3 +54,31 @@ def order_detail(request, order_id):
 def order_confirmation(request, order_id):
     order = get_object_or_404(Order, id=order_id)
     return render(request, 'orders/order_confirmation.html', {'order': order})
+
+
+@login_required
+def order_receipt(request, order_id):
+    order = get_object_or_404(Order, id=order_id, user=request.user)
+    if not order.paid:
+        messages.warning(request, 'Receipt is available after payment is confirmed.')
+        return redirect('orders:order_detail', order_id=order.id)
+
+    context = {
+        'document_type': 'Payment Receipt',
+        'document_code': f'RCPT-{order.id:06d}',
+        'order': order,
+        'generated_at': timezone.localtime(timezone.now()),
+    }
+    return render(request, 'orders/document.html', context)
+
+
+@staff_member_required
+def order_invoice(request, order_id):
+    order = get_object_or_404(Order, id=order_id)
+    context = {
+        'document_type': 'Client Invoice',
+        'document_code': f'INV-{order.id:06d}',
+        'order': order,
+        'generated_at': timezone.localtime(timezone.now()),
+    }
+    return render(request, 'orders/document.html', context)

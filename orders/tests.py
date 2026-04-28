@@ -142,3 +142,42 @@ class OrderPaymentNotificationTests(TestCase):
         self.assertEqual(len(mail.outbox), 1)
         self.assertIn(f"Payment failed for order #{order.id}", mail.outbox[0].subject)
         self.assertEqual(mail.outbox[0].to, ["alice@example.com"])
+
+    def test_paid_customer_can_open_receipt(self):
+        order = self.create_order()
+        order.paid = True
+        order.mpesa_code = "ABC123XYZ"
+        order.save(update_fields=["paid", "mpesa_code"])
+        self.client.force_login(self.user)
+
+        response = self.client.get(reverse("orders:order_receipt", args=[order.id]))
+
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, "Payment Receipt")
+        self.assertContains(response, "TECHSTORE")
+        self.assertContains(response, "ABC123XYZ")
+
+    def test_unpaid_customer_receipt_redirects_to_order(self):
+        order = self.create_order()
+        self.client.force_login(self.user)
+
+        response = self.client.get(reverse("orders:order_receipt", args=[order.id]))
+
+        self.assertEqual(response.status_code, 302)
+        self.assertIn(reverse("orders:order_detail", args=[order.id]), response.url)
+
+    def test_staff_can_open_invoice(self):
+        order = self.create_order()
+        staff = User.objects.create_user(
+            username="admin",
+            email="admin@example.com",
+            password="secret123",
+            is_staff=True,
+        )
+        self.client.force_login(staff)
+
+        response = self.client.get(reverse("orders:order_invoice", args=[order.id]))
+
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, "Client Invoice")
+        self.assertContains(response, f"INV-{order.id:06d}")

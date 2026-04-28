@@ -19,7 +19,12 @@
     <div class="summary-row"><span>Delivery to</span><span>{{ order.city }}, {{ order.county }}</span></div>
   </div>
 
-  <a href="{% url 'orders:order_list' %}" class="btn btn-outline-accent me-2"><i class="bi bi-box-seam me-1"></i>My Orders</a>
-  <a href="{% url 'store:home' %}" class="btn btn-hero-primary"><i class="bi bi-grid me-1"></i>Continue Shopping</a>
+  <div class="d-flex flex-wrap justify-content-center gap-2">
+    {% if order.paid and user.is_authenticated and user == order.user %}
+    <a href="{% url 'orders:order_receipt' order.id %}" class="btn btn-success"><i class="bi bi-receipt-cutoff me-1"></i>Open Receipt</a>
+    {% endif %}
+    <a href="{% url 'orders:order_list' %}" class="btn btn-outline-accent"><i class="bi bi-box-seam me-1"></i>My Orders</a>
+    <a href="{% url 'store:home' %}" class="btn btn-hero-primary"><i class="bi bi-grid me-1"></i>Continue Shopping</a>
+  </div>
 </div>
 {% endblock %}

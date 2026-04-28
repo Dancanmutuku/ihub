@@ -1,0 +1,394 @@
+{% load store_tags %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>{{ document_type }} {{ document_code }} - TechStore KE</title>
+  <style>
+    :root {
+      color-scheme: light;
+      --ink: #101828;
+      --muted: #667085;
+      --line: #d0d5dd;
+      --panel: #f8fafc;
+      --accent: #0ea5e9;
+      --accent-strong: #0369a1;
+      --success: #16a34a;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: Inter, Arial, sans-serif;
+      color: var(--ink);
+      background: #eef2f6;
+      padding: 24px;
+    }
+    .page {
+      max-width: 960px;
+      margin: 0 auto;
+      background: white;
+      min-height: 100vh;
+      box-shadow: 0 20px 48px rgba(16, 24, 40, 0.12);
+      position: relative;
+      overflow: hidden;
+    }
+    .toolbar {
+      display: flex;
+      justify-content: flex-end;
+      gap: 12px;
+      padding: 20px 28px 0;
+      flex-wrap: wrap;
+    }
+    .toolbar a, .toolbar button {
+      border: 1px solid var(--line);
+      background: white;
+      color: var(--ink);
+      border-radius: 6px;
+      padding: 10px 14px;
+      font: inherit;
+      cursor: pointer;
+      text-decoration: none;
+    }
+    .document {
+      padding: 28px;
+      position: relative;
+    }
+    .header {
+      display: grid;
+      grid-template-columns: 1.6fr 1fr;
+      gap: 24px;
+      border-bottom: 1px solid var(--line);
+      padding-bottom: 24px;
+    }
+    .brand {
+      display: flex;
+      gap: 14px;
+      align-items: center;
+    }
+    .chip {
+      width: 64px;
+      height: 64px;
+      border-radius: 16px;
+      background: linear-gradient(135deg, #0f172a, #0ea5e9);
+      display: grid;
+      place-items: center;
+      color: white;
+      font-size: 30px;
+      font-weight: 700;
+      font-family: "JetBrains Mono", monospace;
+      box-shadow: inset 0 0 0 1px rgba(255,255,255,0.12);
+    }
+    .brand h1 {
+      margin: 0;
+      font-size: 28px;
+      letter-spacing: 0;
+    }
+    .brand p, .meta p, .section p, .small {
+      margin: 0;
+      color: var(--muted);
+      line-height: 1.55;
+    }
+    .meta {
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      padding: 16px;
+    }
+    .meta-row {
+      display: flex;
+      justify-content: space-between;
+      gap: 16px;
+      padding: 6px 0;
+      font-size: 14px;
+    }
+    .meta-row strong { color: var(--ink); }
+    .grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+      margin-top: 24px;
+    }
+    .section {
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      padding: 18px;
+      background: white;
+    }
+    .section h2 {
+      margin: 0 0 10px;
+      font-size: 15px;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      color: var(--accent-strong);
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 24px;
+      position: relative;
+      z-index: 1;
+    }
+    th, td {
+      padding: 14px 10px;
+      text-align: left;
+      border-bottom: 1px solid var(--line);
+      font-size: 14px;
+      vertical-align: top;
+    }
+    th {
+      background: var(--panel);
+      color: var(--muted);
+      text-transform: uppercase;
+      font-size: 12px;
+      letter-spacing: 0.04em;
+    }
+    .num { text-align: right; }
+    .totals {
+      margin-top: 20px;
+      margin-left: auto;
+      width: min(360px, 100%);
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      padding: 16px;
+      background: var(--panel);
+      position: relative;
+      z-index: 1;
+    }
+    .totals-row {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 8px 0;
+      font-size: 15px;
+    }
+    .totals-row.total {
+      border-top: 1px solid var(--line);
+      margin-top: 8px;
+      padding-top: 14px;
+      font-size: 18px;
+      font-weight: 700;
+    }
+    .stamp {
+      position: absolute;
+      right: 52px;
+      top: 250px;
+      width: 240px;
+      height: 240px;
+      border-radius: 50%;
+      border: 6px solid rgba(3, 105, 161, 0.20);
+      transform: rotate(-15deg);
+      display: grid;
+      place-items: center;
+      opacity: 0.92;
+      pointer-events: none;
+      z-index: 0;
+    }
+    .stamp::before,
+    .stamp::after {
+      content: "";
+      position: absolute;
+      inset: 14px;
+      border-radius: 50%;
+      border: 2px solid rgba(14, 165, 233, 0.26);
+    }
+    .stamp::after {
+      inset: 30px;
+      border-style: dashed;
+      border-color: rgba(3, 105, 161, 0.38);
+    }
+    .stamp-inner {
+      width: 156px;
+      height: 156px;
+      border-radius: 50%;
+      border: 2px solid rgba(3, 105, 161, 0.5);
+      display: grid;
+      place-items: center;
+      text-align: center;
+      padding: 14px;
+      color: var(--accent-strong);
+      background: rgba(14, 165, 233, 0.05);
+      font-family: "JetBrains Mono", monospace;
+    }
+    .stamp-title {
+      font-size: 18px;
+      font-weight: 700;
+      line-height: 1.15;
+    }
+    .stamp-sub {
+      font-size: 10px;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      margin-top: 6px;
+    }
+    .stamp-time {
+      margin-top: 8px;
+      font-size: 11px;
+      line-height: 1.35;
+    }
+    .status-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 12px;
+      border-radius: 999px;
+      font-size: 12px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      background: rgba(22, 163, 74, 0.10);
+      color: var(--success);
+    }
+    .footer-note {
+      margin-top: 32px;
+      padding-top: 16px;
+      border-top: 1px solid var(--line);
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.6;
+      position: relative;
+      z-index: 1;
+    }
+    @media print {
+      body {
+        background: white;
+        padding: 0;
+      }
+      .page {
+        box-shadow: none;
+        max-width: none;
+      }
+      .toolbar {
+        display: none;
+      }
+      .document {
+        padding: 24px;
+      }
+    }
+    @media (max-width: 760px) {
+      body { padding: 0; }
+      .header, .grid { grid-template-columns: 1fr; }
+      .stamp {
+        width: 180px;
+        height: 180px;
+        right: 16px;
+        top: 360px;
+      }
+      .stamp-inner {
+        width: 118px;
+        height: 118px;
+      }
+      .stamp-title { font-size: 14px; }
+      .stamp-time, .stamp-sub { font-size: 9px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <div class="toolbar">
+      <button onclick="window.print()">Print / Save PDF</button>
+      {% if request.user.is_staff %}
+      <a href="{% url 'admin:orders_order_change' order.id %}">Open in Admin</a>
+      {% else %}
+      <a href="{% url 'orders:order_detail' order.id %}">Back to Order</a>
+      {% endif %}
+    </div>
+
+    <div class="document">
+      <div class="header">
+        <div>
+          <div class="brand">
+            <div class="chip">TS</div>
+            <div>
+              <h1>TechStore KE</h1>
+              <p>Premium infrastructure, devices, and business technology supply.</p>
+              <p class="small">Nairobi, Kenya</p>
+            </div>
+          </div>
+        </div>
+        <div class="meta">
+          <div class="meta-row"><span>Document</span><strong>{{ document_type }}</strong></div>
+          <div class="meta-row"><span>Reference</span><strong>{{ document_code }}</strong></div>
+          <div class="meta-row"><span>Order ID</span><strong>#{{ order.id }}</strong></div>
+          <div class="meta-row"><span>Created</span><strong>{{ order.created|date:"d M Y, H:i" }}</strong></div>
+          <div class="meta-row"><span>Generated</span><strong>{{ generated_at|date:"d M Y, H:i:s" }}</strong></div>
+        </div>
+      </div>
+
+      <div class="grid">
+        <div class="section">
+          <h2>Bill To</h2>
+          <p><strong>{{ order.full_name }}</strong></p>
+          <p>{{ order.email }}</p>
+          <p>{{ order.phone }}</p>
+          <p>{{ order.address }}</p>
+          <p>{{ order.city }}, {{ order.county }} {{ order.postal_code }}</p>
+        </div>
+        <div class="section">
+          <h2>Order Snapshot</h2>
+          <p><strong>Status:</strong> {{ order.get_status_display }}</p>
+          <p><strong>Payment method:</strong> {{ order.payment_method|upper }}</p>
+          <p><strong>Payment state:</strong>
+            {% if order.paid %}
+            <span class="status-pill">Payment Confirmed</span>
+            {% else %}
+            Pending Payment
+            {% endif %}
+          </p>
+          {% if order.mpesa_code %}
+          <p><strong>M-Pesa receipt:</strong> {{ order.mpesa_code }}</p>
+          {% endif %}
+          {% if order.notes %}
+          <p><strong>Client notes:</strong> {{ order.notes }}</p>
+          {% endif %}
+        </div>
+      </div>
+
+      <div class="stamp" aria-hidden="true">
+        <div class="stamp-inner">
+          <div>
+            <div class="stamp-title">TECHSTORE<br>AUTH GRID</div>
+            <div class="stamp-sub">{{ document_type }}</div>
+            <div class="stamp-time">{{ generated_at|date:"d M Y" }}<br>{{ generated_at|date:"H:i:s" }}</div>
+          </div>
+        </div>
+      </div>
+
+      <table>
+        <thead>
+          <tr>
+            <th style="width: 50%">Item</th>
+            <th class="num">Qty</th>
+            <th class="num">Unit Price</th>
+            <th class="num">Line Total</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for item in order.items.all %}
+          <tr>
+            <td>{{ item.product_name }}</td>
+            <td class="num">{{ item.quantity }}</td>
+            <td class="num">{{ item.price|currency_kes }}</td>
+            <td class="num">{{ item.get_cost|currency_kes }}</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+
+      <div class="totals">
+        <div class="totals-row"><span>Subtotal</span><strong>{{ order.get_total_cost|currency_kes }}</strong></div>
+        <div class="totals-row"><span>Delivery</span><strong>Included</strong></div>
+        <div class="totals-row total"><span>Total</span><strong>{{ order.get_total_cost|currency_kes }}</strong></div>
+      </div>
+
+      <div class="footer-note">
+        {% if document_type == 'Payment Receipt' %}
+        This receipt confirms that payment has been recorded in the TechStore KE system for the order above.
+        {% else %}
+        This invoice was generated by TechStore KE for client billing and fulfillment follow-up.
+        {% endif %}
+      </div>
+    </div>
+  </div>
+</body>
+</html>

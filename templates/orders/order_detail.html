@@ -13,10 +13,13 @@
         <h4 class="mb-1">Order <span class="text-gradient">#{{ order.id }}</span></h4>
         <div class="text-muted small">Placed on {{ order.created|date:"d M Y, H:i" }}</div>
       </div>
-      <div class="d-flex gap-2">
+      <div class="d-flex gap-2 flex-wrap justify-content-end">
         <span class="status-badge status-{{ order.status }}">{{ order.get_status_display }}</span>
         {% if order.paid %}
         <span class="badge bg-success">Paid</span>
+        <a href="{% url 'orders:order_receipt' order.id %}" class="btn btn-sm btn-success">
+          <i class="bi bi-receipt-cutoff me-1"></i>Receipt
+        </a>
         {% else %}
         <span class="badge bg-warning text-dark">Awaiting Payment</span>
         {% endif %}
