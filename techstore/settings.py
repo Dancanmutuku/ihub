@@ -133,6 +133,7 @@ STATIC_URL = '/static/'
 STATICFILES_DIRS = [BASE_DIR / 'static']
 STATIC_ROOT = BASE_DIR / 'staticfiles'
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
+DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'
@@ -158,3 +159,14 @@ if not DEBUG:
 # ── Session ─────────────────────────────────────────────────
 SESSION_ENGINE = 'django.contrib.sessions.backends.db'
 SESSION_COOKIE_AGE = 86400 * 7  # 7 days
+
+# ── M-Pesa ──────────────────────────────────────────────────
+MPESA_CONSUMER_KEY = config('MPESA_CONSUMER_KEY', default='')
+MPESA_CONSUMER_SECRET = config('MPESA_CONSUMER_SECRET', default='')
+MPESA_SHORTCODE = config('MPESA_SHORTCODE', default='174379')
+MPESA_PASSKEY = config(
+    'MPESA_PASSKEY',
+    default='bfb279f9aa9bdbcf158e97dd71a467cd2e0c893059b10f78e6b72ada1ed2c919',
+)
+MPESA_CALLBACK_URL = config('MPESA_CALLBACK_URL', default='')
+MPESA_ENVIRONMENT = config('MPESA_ENVIRONMENT', default='sandbox')

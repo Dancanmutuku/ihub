@@ -73,6 +73,30 @@ def format_phone_number(phone):
     return phone
 
 
+def validate_mpesa_config():
+    required_fields = {
+        "MPESA_CONSUMER_KEY": getattr(settings, "MPESA_CONSUMER_KEY", ""),
+        "MPESA_CONSUMER_SECRET": getattr(settings, "MPESA_CONSUMER_SECRET", ""),
+        "MPESA_SHORTCODE": getattr(settings, "MPESA_SHORTCODE", ""),
+        "MPESA_PASSKEY": getattr(settings, "MPESA_PASSKEY", ""),
+        "MPESA_CALLBACK_URL": getattr(settings, "MPESA_CALLBACK_URL", ""),
+        "MPESA_ENVIRONMENT": getattr(settings, "MPESA_ENVIRONMENT", ""),
+    }
+
+    missing = [name for name, value in required_fields.items() if not str(value).strip()]
+    if missing:
+        return f"Missing M-Pesa configuration: {', '.join(missing)}"
+
+    callback_url = required_fields["MPESA_CALLBACK_URL"].strip()
+    if not callback_url.startswith("https://"):
+        return "M-Pesa callback URL must be a public https URL."
+
+    if not callback_url.endswith("/payments/mpesa/callback/"):
+        return "M-Pesa callback URL must end with /payments/mpesa/callback/."
+
+    return None
+
+
 # =========================================================
 # STK PUSH REQUEST
 # =========================================================
@@ -80,6 +104,13 @@ def stk_push(phone_number, amount, order_id):
     """
     Initiate M-Pesa STK Push payment
     """
+
+    config_error = validate_mpesa_config()
+    if config_error:
+        return {
+            "success": False,
+            "error": config_error,
+        }
 
     access_token = get_mpesa_access_token()
     if not access_token:
@@ -96,6 +127,15 @@ def stk_push(phone_number, amount, order_id):
 
     password = generate_password(shortcode, passkey, timestamp)
     phone = format_phone_number(phone_number)
+
+    if settings.MPESA_ENVIRONMENT == "sandbox" and phone != "254708374149":
+        return {
+            "success": False,
+            "error": (
+                "Sandbox only sends STK prompts to Safaricom test numbers. "
+                "Use 254708374149 when testing."
+            ),
+        }
 
     # Select API environment
     if settings.MPESA_ENVIRONMENT == "production":
