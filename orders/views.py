@@ -4,6 +4,7 @@ from django.contrib import messages
 from cart.cart import Cart
 from .models import Order, OrderItem
 from .forms import OrderCreateForm
+from .notifications import send_order_created_notifications
 
 
 def order_create(request):
@@ -28,6 +29,7 @@ def order_create(request):
                     price=item['price'],
                     quantity=item['quantity'],
                 )
+            send_order_created_notifications(order)
             cart.clear()
             request.session['order_id'] = order.id
             return redirect('payments:payment_process')
