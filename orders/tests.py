@@ -96,6 +96,12 @@ class OrderPaymentNotificationTests(TestCase):
         self.assertEqual(mail.outbox[0].to, ["alice@example.com"])
         self.assertEqual(mail.outbox[1].to, ["admin@example.com"])
 
+    def test_anonymous_user_must_sign_in_before_checkout(self):
+        response = self.client.get(reverse("orders:order_create"))
+
+        self.assertEqual(response.status_code, 302)
+        self.assertIn(reverse("account_login"), response.url)
+
     def test_order_status_update_notifies_customer(self):
         order = self.create_order()
         mail.outbox = []

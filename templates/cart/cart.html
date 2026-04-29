@@ -75,9 +75,18 @@
           <span>Total</span>
           <span>{{ cart.get_total_price|currency_kes }}</span>
         </div>
+        {% if user.is_authenticated %}
         <a href="{% url 'orders:order_create' %}" class="btn btn-hero-primary w-100 mt-3">
           <i class="bi bi-lock-fill me-2"></i>Proceed to Checkout
         </a>
+        {% else %}
+        <a href="{% url 'account_login' %}?next={% url 'orders:order_create' %}" class="btn btn-hero-primary w-100 mt-3">
+          <i class="bi bi-person-lock me-2"></i>Sign In to Checkout
+        </a>
+        <div class="mt-3 text-center">
+          <small class="text-muted">Create an account or sign in before placing an order.</small>
+        </div>
+        {% endif %}
         <div class="mt-3 text-center">
           <small class="text-muted"><i class="bi bi-phone-fill me-1 text-accent"></i>Pay securely via M-Pesa</small>
         </div>

@@ -135,7 +135,7 @@ Visit **http://127.0.0.1:8000** 🎉
    ```
 
 ### Sandbox Test Phone Numbers
-Use Safaricom simulator test numbers: `254708374149`
+Use Safaricom simulator test numbers: `254726263888`
 
 ---
 

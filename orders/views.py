@@ -9,6 +9,7 @@ from .forms import OrderCreateForm
 from .notifications import send_order_created_notifications
 
 
+@login_required
 def order_create(request):
     cart = Cart(request)
     if len(cart) == 0:

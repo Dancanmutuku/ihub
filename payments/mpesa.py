@@ -128,12 +128,12 @@ def stk_push(phone_number, amount, order_id):
     password = generate_password(shortcode, passkey, timestamp)
     phone = format_phone_number(phone_number)
 
-    if settings.MPESA_ENVIRONMENT == "sandbox" and phone != "254708374149":
+    if settings.MPESA_ENVIRONMENT == "sandbox" and phone != "254726263888":
         return {
             "success": False,
             "error": (
                 "Sandbox only sends STK prompts to Safaricom test numbers. "
-                "Use 254708374149 when testing."
+                "Use 254726263888 when testing."
             ),
         }
 
