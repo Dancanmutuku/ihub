@@ -186,6 +186,7 @@ This project is ready for Render with:
    - `BREVO_API_KEY`
    - `DEFAULT_FROM_EMAIL`
    - `ADMIN_NOTIFICATION_EMAILS`
+   - optional: `DJANGO_SUPERUSER_USERNAME`, `DJANGO_SUPERUSER_EMAIL`, `DJANGO_SUPERUSER_PASSWORD`
 
 ### Option 2: Manual Render setup
 
@@ -201,11 +202,20 @@ This project is ready for Render with:
    - `DEBUG=False`
    - `ALLOWED_HOSTS`
    - `CSRF_TRUSTED_ORIGINS`
+   - optional: `DJANGO_SUPERUSER_USERNAME`, `DJANGO_SUPERUSER_EMAIL`, `DJANGO_SUPERUSER_PASSWORD`
    - plus your Google, M-Pesa, and Brevo API credentials
 
 ### After first deploy
 
-Create an admin user from the Render shell:
+You can either let `build.sh` create the admin automatically with:
+
+```bash
+DJANGO_SUPERUSER_USERNAME=admin
+DJANGO_SUPERUSER_EMAIL=admin@example.com
+DJANGO_SUPERUSER_PASSWORD=adm:/2025
+```
+
+or create one manually from the Render shell:
 
 ```bash
 python manage.py createsuperuser
