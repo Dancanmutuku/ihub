@@ -48,6 +48,7 @@ INSTALLED_APPS = [
     'crispy_bootstrap5',
 
     # Local apps
+    'accounts',
     'store',
     'cart',
     'orders',
