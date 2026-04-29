@@ -2,17 +2,32 @@
 import os
 from pathlib import Path
 from decouple import config, Csv
+import dj_database_url
 
 BASE_DIR = Path(__file__).resolve().parent.parent
+RENDER = os.getenv('RENDER', '').lower() == 'true'
 
 # ── Security ─────────────────────────────────────────────────
 SECRET_KEY = config('SECRET_KEY', default='django-insecure-change-me')
-DEBUG = config('DEBUG', default=True, cast=bool)
-ALLOWED_HOSTS = config(
+DEBUG = config('DEBUG', default=not RENDER, cast=bool)
+ALLOWED_HOSTS = list(config(
     'ALLOWED_HOSTS',
-    default='localhost,127.0.0.1,ihub-ct4o.onrender.com,lienable-fonda-apprehensively.ngrok-free.dev',
+    default='localhost,127.0.0.1,lienable-fonda-apprehensively.ngrok-free.dev',
     cast=Csv()
-)
+))
+RENDER_EXTERNAL_HOSTNAME = os.getenv('RENDER_EXTERNAL_HOSTNAME', '').strip()
+if RENDER_EXTERNAL_HOSTNAME and RENDER_EXTERNAL_HOSTNAME not in ALLOWED_HOSTS:
+    ALLOWED_HOSTS.append(RENDER_EXTERNAL_HOSTNAME)
+
+CSRF_TRUSTED_ORIGINS = list(config(
+    'CSRF_TRUSTED_ORIGINS',
+    default='https://lienable-fonda-apprehensively.ngrok-free.dev',
+    cast=Csv(),
+))
+if RENDER_EXTERNAL_HOSTNAME:
+    render_origin = f'https://{RENDER_EXTERNAL_HOSTNAME}'
+    if render_origin not in CSRF_TRUSTED_ORIGINS:
+        CSRF_TRUSTED_ORIGINS.append(render_origin)
 
 # ── Installed Apps ───────────────────────────────────────────
 INSTALLED_APPS = [
@@ -52,6 +67,13 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
+SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+USE_X_FORWARDED_HOST = True
+
+if not DEBUG:
+    SESSION_COOKIE_SECURE = True
+    CSRF_COOKIE_SECURE = True
+
 ROOT_URLCONF = 'techstore.urls'
 
 TEMPLATES = [
@@ -76,10 +98,11 @@ WSGI_APPLICATION = 'techstore.wsgi.application'
 
 # ── Database ────────────────────────────────────────────────
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
-    }
+    'default': dj_database_url.config(
+        default=config('DATABASE_URL', default=f'sqlite:///{BASE_DIR / "db.sqlite3"}'),
+        conn_max_age=config('DATABASE_CONN_MAX_AGE', default=600, cast=int),
+        conn_health_checks=True,
+    )
 }
 
 # ── Auth ───────────────────────────────────────────────────

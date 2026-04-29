@@ -77,6 +77,8 @@ Edit `.env` with your actual values:
 |---|---|
 | `SECRET_KEY` | Django secret key — generate with `python -c "from django.core.management.utils import get_random_secret_key; print(get_random_secret_key())"` |
 | `DEBUG` | `True` for development, `False` for production |
+| `DATABASE_URL` | Optional. Leave blank for local SQLite, or set a PostgreSQL connection string |
+| `CSRF_TRUSTED_ORIGINS` | Comma-separated list such as `http://localhost:8000,https://your-app.onrender.com` |
 | `GOOGLE_CLIENT_ID` | From [Google Cloud Console](https://console.cloud.google.com/) |
 | `GOOGLE_CLIENT_SECRET` | From Google Cloud Console |
 | `MPESA_CONSUMER_KEY` | From [Safaricom Developer Portal](https://developer.safaricom.co.ke/) |
@@ -105,6 +107,14 @@ python manage.py runserver
 ```
 
 Visit **http://127.0.0.1:8000** 🎉
+
+### Optional: run locally with PostgreSQL
+
+If you want to match production more closely, set `DATABASE_URL` in `.env`:
+
+```bash
+DATABASE_URL=postgresql://postgres:postgres@localhost:5432/techstore
+```
 
 ---
 
@@ -148,6 +158,62 @@ Use Safaricom simulator test numbers: `254726263888`
 
 ---
 
+## Render Deployment
+
+This project is ready for Render with:
+
+- `render.yaml` for Blueprint deploys
+- `build.sh` for install, static collection, and migrations
+- `DATABASE_URL`-based database config with PostgreSQL support
+
+### Option 1: Blueprint deploy
+
+1. Push this repo to GitHub/GitLab/Bitbucket
+2. In Render, open **Blueprints**
+3. Create a new Blueprint using this repo
+4. Review the generated services from `render.yaml`
+5. Add your missing environment variables in Render:
+   - `GOOGLE_CLIENT_ID`
+   - `GOOGLE_CLIENT_SECRET`
+   - `MPESA_CONSUMER_KEY`
+   - `MPESA_CONSUMER_SECRET`
+   - `MPESA_SHORTCODE`
+   - `MPESA_PASSKEY`
+   - `MPESA_CALLBACK_URL`
+   - `MPESA_ENVIRONMENT`
+   - `EMAIL_HOST_USER`
+   - `EMAIL_HOST_PASSWORD`
+   - `DEFAULT_FROM_EMAIL`
+   - `ADMIN_NOTIFICATION_EMAILS`
+
+### Option 2: Manual Render setup
+
+1. Create a **Postgres** database in Render
+2. Copy its **internal database URL**
+3. Create a **Python Web Service**
+4. Use:
+   - Build Command: `./build.sh`
+   - Start Command: `gunicorn techstore.wsgi:application`
+5. Add these environment variables:
+   - `DATABASE_URL`
+   - `SECRET_KEY`
+   - `DEBUG=False`
+   - `ALLOWED_HOSTS`
+   - `CSRF_TRUSTED_ORIGINS`
+   - plus your Google, M-Pesa, and SMTP credentials
+
+### After first deploy
+
+Create an admin user from the Render shell:
+
+```bash
+python manage.py createsuperuser
+```
+
+If you are moving existing data from SQLite to PostgreSQL, export and import your data before going live.
+
+---
+
 ## 🗄️ Admin Panel
 
 Visit **http://127.0.0.1:8000/admin/** to:
@@ -186,7 +252,7 @@ python manage.py shell
 |---|---|
 | Backend | Django 5.0 |
 | Auth | django-allauth + Google OAuth |
-| Database | SQLite (swap to PostgreSQL for production) |
+| Database | SQLite locally, PostgreSQL on Render/production |
 | Frontend | Bootstrap 5 + Custom CSS (dark theme) |
 | Fonts | Orbitron + Inter + JetBrains Mono |
 | Payments | M-Pesa Daraja API (STK Push) |
