@@ -169,21 +169,16 @@ CRISPY_TEMPLATE_PACK = 'bootstrap5'
 CART_SESSION_ID = 'cart'
 
 # ── Email ───────────────────────────────────────────────────
-EMAIL_HOST = config('EMAIL_HOST', default='smtp.gmail.com')
-EMAIL_PORT = config('EMAIL_PORT', default=587, cast=int)
-EMAIL_USE_TLS = config('EMAIL_USE_TLS', default=True, cast=bool)
-EMAIL_HOST_USER = config('EMAIL_HOST_USER', default='')
-EMAIL_HOST_PASSWORD = config('EMAIL_HOST_PASSWORD', default='')
 DEFAULT_FROM_EMAIL = config('DEFAULT_FROM_EMAIL', default='TechStore <mutukudancan6@gmail.com>')
 EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
-if EMAIL_HOST_USER and EMAIL_HOST_PASSWORD:
-    EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+BREVO_API_KEY = config('BREVO_API_KEY', default='')
+BREVO_API_URL = config('BREVO_API_URL', default='https://api.brevo.com/v3/smtp/email')
 
 ADMIN_NOTIFICATION_EMAILS = [
     email.strip()
     for email in config(
         'ADMIN_NOTIFICATION_EMAILS',
-        default=EMAIL_HOST_USER,
+        default='',
         cast=Csv(),
     )
     if email.strip()

@@ -1,4 +1,5 @@
 from decimal import Decimal
+from unittest.mock import patch
 
 from django.contrib.auth.models import User
 from django.core import mail
@@ -9,6 +10,7 @@ from payments.models import Payment
 from store.models import Category, Product
 
 from .models import Order, OrderItem
+from .notifications import _send_email
 
 
 @override_settings(
@@ -16,6 +18,7 @@ from .models import Order, OrderItem
     DEFAULT_FROM_EMAIL="store@example.com",
     ADMIN_NOTIFICATION_EMAILS=["admin@example.com"],
     ASYNC_EMAIL_NOTIFICATIONS=False,
+    BREVO_API_KEY="",
 )
 class OrderPaymentNotificationTests(TestCase):
     def setUp(self):
@@ -188,3 +191,19 @@ class OrderPaymentNotificationTests(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, "Client Invoice")
         self.assertContains(response, f"INV-{order.id:06d}")
+
+    @override_settings(
+        BREVO_API_KEY="brevo-test-key",
+        DEFAULT_FROM_EMAIL="TechStore KE <sender@example.com>",
+    )
+    @patch("orders.notifications.requests.post")
+    def test_brevo_api_is_used_when_key_exists(self, mock_post):
+        mock_post.return_value.raise_for_status.return_value = None
+
+        _send_email("Subject", "Body text", ["alice@example.com"])
+
+        mock_post.assert_called_once()
+        _, kwargs = mock_post.call_args
+        self.assertEqual(kwargs["headers"]["api-key"], "brevo-test-key")
+        self.assertEqual(kwargs["json"]["sender"]["email"], "sender@example.com")
+        self.assertEqual(kwargs["json"]["to"][0]["email"], "alice@example.com")

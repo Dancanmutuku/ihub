@@ -1,6 +1,8 @@
 import logging
 from concurrent.futures import ThreadPoolExecutor
+from email.utils import parseaddr
 
+import requests
 from django.conf import settings
 from django.core.mail import send_mail
 from django.db import close_old_connections, transaction
@@ -34,6 +36,18 @@ def _admin_emails():
     return list(getattr(settings, "ADMIN_NOTIFICATION_EMAILS", []))
 
 
+def _sender_payload():
+    sender_name, sender_email = parseaddr(settings.DEFAULT_FROM_EMAIL)
+    return {
+        "name": sender_name or "TechStore KE",
+        "email": sender_email or settings.DEFAULT_FROM_EMAIL,
+    }
+
+
+def _recipient_payload(recipients):
+    return [{"email": email} for email in recipients if email]
+
+
 def _run_async(task, *args):
     if getattr(settings, "ASYNC_EMAIL_NOTIFICATIONS", True):
         email_executor.submit(_run_with_connection_cleanup, task, *args)
@@ -63,6 +77,25 @@ def _send_email(subject, message, recipients):
         return
 
     try:
+        if getattr(settings, "BREVO_API_KEY", ""):
+            response = requests.post(
+                settings.BREVO_API_URL,
+                headers={
+                    "accept": "application/json",
+                    "api-key": settings.BREVO_API_KEY,
+                    "content-type": "application/json",
+                },
+                json={
+                    "sender": _sender_payload(),
+                    "to": _recipient_payload(clean_recipients),
+                    "subject": subject,
+                    "textContent": message,
+                },
+                timeout=30,
+            )
+            response.raise_for_status()
+            return
+
         send_mail(
             subject=subject,
             message=message,

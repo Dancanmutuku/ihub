@@ -86,6 +86,8 @@ Edit `.env` with your actual values:
 | `MPESA_SHORTCODE` | Use `174379` for sandbox |
 | `MPESA_PASSKEY` | Sandbox passkey from Safaricom |
 | `MPESA_CALLBACK_URL` | Your public URL + `/payments/mpesa/callback/` |
+| `BREVO_API_KEY` | Brevo transactional email API key for production email sending |
+| `DEFAULT_FROM_EMAIL` | Must use a sender email verified in Brevo |
 
 ### 5. Run migrations and load seed data
 
@@ -181,8 +183,7 @@ This project is ready for Render with:
    - `MPESA_PASSKEY`
    - `MPESA_CALLBACK_URL`
    - `MPESA_ENVIRONMENT`
-   - `EMAIL_HOST_USER`
-   - `EMAIL_HOST_PASSWORD`
+   - `BREVO_API_KEY`
    - `DEFAULT_FROM_EMAIL`
    - `ADMIN_NOTIFICATION_EMAILS`
 
@@ -200,7 +201,7 @@ This project is ready for Render with:
    - `DEBUG=False`
    - `ALLOWED_HOSTS`
    - `CSRF_TRUSTED_ORIGINS`
-   - plus your Google, M-Pesa, and SMTP credentials
+   - plus your Google, M-Pesa, and Brevo API credentials
 
 ### After first deploy
 
