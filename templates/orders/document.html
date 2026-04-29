@@ -8,28 +8,28 @@
   <style>
     :root {
       color-scheme: light;
-      --ink: #101828;
-      --muted: #667085;
-      --line: #d0d5dd;
-      --panel: #f8fafc;
-      --accent: #0ea5e9;
-      --accent-strong: #0369a1;
-      --success: #16a34a;
+      --ink: #1f2937;
+      --muted: #6b7280;
+      --line: #d1d5db;
+      --panel: #f9fafb;
+      --accent: #0f6cbd;
+      --accent-strong: #0b4f8a;
+      --success: #15803d;
     }
     * { box-sizing: border-box; }
     body {
       margin: 0;
-      font-family: Inter, Arial, sans-serif;
+      font-family: Arial, Helvetica, sans-serif;
       color: var(--ink);
-      background: #eef2f6;
-      padding: 24px;
+      background: #eceff3;
+      padding: 20px;
     }
     .page {
-      max-width: 960px;
+      max-width: 920px;
       margin: 0 auto;
       background: white;
       min-height: 100vh;
-      box-shadow: 0 20px 48px rgba(16, 24, 40, 0.12);
+      box-shadow: 0 12px 30px rgba(15, 23, 42, 0.10);
       position: relative;
       overflow: hidden;
     }
@@ -44,55 +44,54 @@
       border: 1px solid var(--line);
       background: white;
       color: var(--ink);
-      border-radius: 6px;
+      border-radius: 4px;
       padding: 10px 14px;
       font: inherit;
       cursor: pointer;
       text-decoration: none;
     }
     .document {
-      padding: 28px;
+      padding: 34px 34px 28px;
       position: relative;
     }
     .header {
       display: grid;
-      grid-template-columns: 1.6fr 1fr;
+      grid-template-columns: 1.5fr 1fr;
       gap: 24px;
       border-bottom: 1px solid var(--line);
-      padding-bottom: 24px;
+      padding-bottom: 20px;
     }
     .brand {
       display: flex;
-      gap: 14px;
-      align-items: center;
+      gap: 16px;
+      align-items: flex-start;
     }
     .chip {
-      width: 64px;
-      height: 64px;
-      border-radius: 16px;
-      background: linear-gradient(135deg, #0f172a, #0ea5e9);
+      width: 58px;
+      height: 58px;
+      border-radius: 8px;
+      background: #0f172a;
       display: grid;
       place-items: center;
       color: white;
-      font-size: 30px;
+      font-size: 22px;
       font-weight: 700;
-      font-family: "JetBrains Mono", monospace;
-      box-shadow: inset 0 0 0 1px rgba(255,255,255,0.12);
+      font-family: Arial, Helvetica, sans-serif;
     }
     .brand h1 {
       margin: 0;
-      font-size: 28px;
+      font-size: 26px;
       letter-spacing: 0;
     }
     .brand p, .meta p, .section p, .small {
       margin: 0;
       color: var(--muted);
-      line-height: 1.55;
+      line-height: 1.5;
     }
     .meta {
       background: var(--panel);
       border: 1px solid var(--line);
-      border-radius: 8px;
+      border-radius: 4px;
       padding: 16px;
     }
     .meta-row {
@@ -111,16 +110,16 @@
     }
     .section {
       border: 1px solid var(--line);
-      border-radius: 8px;
+      border-radius: 4px;
       padding: 18px;
       background: white;
     }
     .section h2 {
-      margin: 0 0 10px;
-      font-size: 15px;
+      margin: 0 0 12px;
+      font-size: 13px;
       text-transform: uppercase;
-      letter-spacing: 0.04em;
-      color: var(--accent-strong);
+      letter-spacing: 0.08em;
+      color: #111827;
     }
     table {
       width: 100%;
@@ -149,7 +148,7 @@
       margin-left: auto;
       width: min(360px, 100%);
       border: 1px solid var(--line);
-      border-radius: 8px;
+      border-radius: 4px;
       padding: 16px;
       background: var(--panel);
       position: relative;
@@ -171,59 +170,61 @@
     }
     .stamp {
       position: absolute;
-      right: 52px;
-      top: 250px;
-      width: 240px;
-      height: 240px;
+      right: 44px;
+      top: 248px;
+      width: 190px;
+      height: 190px;
       border-radius: 50%;
-      border: 6px solid rgba(3, 105, 161, 0.20);
-      transform: rotate(-15deg);
+      border: 4px solid rgba(11, 79, 138, 0.42);
+      transform: rotate(-12deg);
       display: grid;
       place-items: center;
-      opacity: 0.92;
+      opacity: 0.78;
       pointer-events: none;
       z-index: 0;
+      background: rgba(15, 108, 189, 0.02);
     }
     .stamp::before,
     .stamp::after {
       content: "";
       position: absolute;
-      inset: 14px;
+      inset: 12px;
       border-radius: 50%;
-      border: 2px solid rgba(14, 165, 233, 0.26);
+      border: 1.5px solid rgba(11, 79, 138, 0.32);
     }
     .stamp::after {
-      inset: 30px;
-      border-style: dashed;
-      border-color: rgba(3, 105, 161, 0.38);
+      inset: 28px;
+      border-style: solid;
+      border-color: rgba(11, 79, 138, 0.2);
     }
     .stamp-inner {
-      width: 156px;
-      height: 156px;
+      width: 128px;
+      height: 128px;
       border-radius: 50%;
-      border: 2px solid rgba(3, 105, 161, 0.5);
+      border: 1.5px solid rgba(11, 79, 138, 0.45);
       display: grid;
       place-items: center;
       text-align: center;
-      padding: 14px;
-      color: var(--accent-strong);
-      background: rgba(14, 165, 233, 0.05);
-      font-family: "JetBrains Mono", monospace;
+      padding: 12px;
+      color: #0b4f8a;
+      background: rgba(255, 255, 255, 0.62);
+      font-family: Arial, Helvetica, sans-serif;
     }
     .stamp-title {
-      font-size: 18px;
+      font-size: 15px;
       font-weight: 700;
-      line-height: 1.15;
+      line-height: 1.2;
+      letter-spacing: 0.04em;
     }
     .stamp-sub {
-      font-size: 10px;
+      font-size: 9px;
       text-transform: uppercase;
-      letter-spacing: 0.08em;
+      letter-spacing: 0.12em;
       margin-top: 6px;
     }
     .stamp-time {
-      margin-top: 8px;
-      font-size: 11px;
+      margin-top: 6px;
+      font-size: 10px;
       line-height: 1.35;
     }
     .status-pill {
@@ -269,16 +270,16 @@
       body { padding: 0; }
       .header, .grid { grid-template-columns: 1fr; }
       .stamp {
-        width: 180px;
-        height: 180px;
+        width: 150px;
+        height: 150px;
         right: 16px;
-        top: 360px;
+        top: 390px;
       }
       .stamp-inner {
-        width: 118px;
-        height: 118px;
+        width: 102px;
+        height: 102px;
       }
-      .stamp-title { font-size: 14px; }
+      .stamp-title { font-size: 12px; }
       .stamp-time, .stamp-sub { font-size: 9px; }
     }
   </style>
@@ -301,7 +302,7 @@
             <div class="chip">TS</div>
             <div>
               <h1>TechStore KE</h1>
-              <p>Premium infrastructure, devices, and business technology supply.</p>
+              <p>Technology supply and fulfillment</p>
               <p class="small">Nairobi, Kenya</p>
             </div>
           </div>
@@ -347,8 +348,8 @@
       <div class="stamp" aria-hidden="true">
         <div class="stamp-inner">
           <div>
-            <div class="stamp-title">TECHSTORE<br>AUTH GRID</div>
-            <div class="stamp-sub">{{ document_type }}</div>
+            <div class="stamp-title">TECHSTORE KE</div>
+            <div class="stamp-sub">{% if document_type == 'Payment Receipt' %}PAID & VERIFIED{% else %}OFFICIAL INVOICE{% endif %}</div>
             <div class="stamp-time">{{ generated_at|date:"d M Y" }}<br>{{ generated_at|date:"H:i:s" }}</div>
           </div>
         </div>
@@ -383,9 +384,9 @@
 
       <div class="footer-note">
         {% if document_type == 'Payment Receipt' %}
-        This receipt confirms that payment has been recorded in the TechStore KE system for the order above.
+        This receipt confirms that payment for the order above has been received and recorded by TechStore KE.
         {% else %}
-        This invoice was generated by TechStore KE for client billing and fulfillment follow-up.
+        This invoice was generated by TechStore KE for client billing and order processing.
         {% endif %}
       </div>
     </div>
