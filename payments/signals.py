@@ -29,6 +29,6 @@ def notify_on_payment_changes(sender, instance, created, **kwargs):
         return
 
     if instance.status == "completed":
-        send_payment_completed_notifications(instance)
+        send_payment_completed_notifications(instance.id, on_commit=True)
     elif instance.status in {"failed", "cancelled"}:
-        send_payment_failed_notification(instance)
+        send_payment_failed_notification(instance.id, on_commit=True)

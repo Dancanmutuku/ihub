@@ -23,4 +23,4 @@ def notify_on_order_changes(sender, instance, created, **kwargs):
 
     previous_status = getattr(instance, "_previous_status", None)
     if previous_status and previous_status != instance.status:
-        send_order_status_update_notification(instance, previous_status)
+        send_order_status_update_notification(instance.id, previous_status, on_commit=True)

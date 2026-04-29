@@ -15,6 +15,7 @@ from .models import Order, OrderItem
     EMAIL_BACKEND="django.core.mail.backends.locmem.EmailBackend",
     DEFAULT_FROM_EMAIL="store@example.com",
     ADMIN_NOTIFICATION_EMAILS=["admin@example.com"],
+    ASYNC_EMAIL_NOTIFICATIONS=False,
 )
 class OrderPaymentNotificationTests(TestCase):
     def setUp(self):

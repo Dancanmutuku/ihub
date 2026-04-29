@@ -1,10 +1,16 @@
 import logging
+from concurrent.futures import ThreadPoolExecutor
 
 from django.conf import settings
 from django.core.mail import send_mail
+from django.db import close_old_connections, transaction
+
+from .models import Order
+from payments.models import Payment
 
 
 logger = logging.getLogger(__name__)
+email_executor = ThreadPoolExecutor(max_workers=4)
 
 
 def _order_total(order):
@@ -28,6 +34,29 @@ def _admin_emails():
     return list(getattr(settings, "ADMIN_NOTIFICATION_EMAILS", []))
 
 
+def _run_async(task, *args):
+    if getattr(settings, "ASYNC_EMAIL_NOTIFICATIONS", True):
+        email_executor.submit(_run_with_connection_cleanup, task, *args)
+    else:
+        task(*args)
+
+
+def _run_with_connection_cleanup(task, *args):
+    close_old_connections()
+    try:
+        task(*args)
+    finally:
+        close_old_connections()
+
+
+def _enqueue(task, *args, on_commit=False):
+    async_enabled = getattr(settings, "ASYNC_EMAIL_NOTIFICATIONS", True)
+    if on_commit and async_enabled:
+        transaction.on_commit(lambda: _run_async(task, *args))
+    else:
+        _run_async(task, *args)
+
+
 def _send_email(subject, message, recipients):
     clean_recipients = [email for email in recipients if email]
     if not clean_recipients:
@@ -45,7 +74,8 @@ def _send_email(subject, message, recipients):
         logger.exception("Failed to send notification email: %s", subject)
 
 
-def send_order_created_notifications(order):
+def _send_order_created_notifications(order_id):
+    order = Order.objects.prefetch_related("items").select_related("user").get(pk=order_id)
     customer_subject = f"TechStore KE: Order #{order.id} received"
     customer_message = (
         f"Hello {order.full_name},\n\n"
@@ -81,7 +111,12 @@ def send_order_created_notifications(order):
     _send_email(admin_subject, admin_message, _admin_emails())
 
 
-def send_order_status_update_notification(order, previous_status):
+def send_order_created_notifications(order_id, on_commit=False):
+    _enqueue(_send_order_created_notifications, order_id, on_commit=on_commit)
+
+
+def _send_order_status_update_notification(order_id, previous_status):
+    order = Order.objects.select_related("user").get(pk=order_id)
     subject = f"TechStore KE: Order #{order.id} is now {order.status}"
     message = (
         f"Hello {order.full_name},\n\n"
@@ -103,7 +138,12 @@ def send_order_status_update_notification(order, previous_status):
     _send_email(subject, message, [_customer_email(order)])
 
 
-def send_payment_completed_notifications(payment):
+def send_order_status_update_notification(order_id, previous_status, on_commit=False):
+    _enqueue(_send_order_status_update_notification, order_id, previous_status, on_commit=on_commit)
+
+
+def _send_payment_completed_notifications(payment_id):
+    payment = Payment.objects.select_related("order__user").get(pk=payment_id)
     order = payment.order
     receipt = payment.mpesa_receipt_number or "Pending receipt number"
 
@@ -133,7 +173,12 @@ def send_payment_completed_notifications(payment):
     _send_email(admin_subject, admin_message, _admin_emails())
 
 
-def send_payment_failed_notification(payment):
+def send_payment_completed_notifications(payment_id, on_commit=False):
+    _enqueue(_send_payment_completed_notifications, payment_id, on_commit=on_commit)
+
+
+def _send_payment_failed_notification(payment_id):
+    payment = Payment.objects.select_related("order__user").get(pk=payment_id)
     order = payment.order
     subject = f"TechStore KE: Payment failed for order #{order.id}"
     message = (
@@ -145,3 +190,7 @@ def send_payment_failed_notification(payment):
         "Thank you,\nTechStore KE"
     )
     _send_email(subject, message, [_customer_email(order)])
+
+
+def send_payment_failed_notification(payment_id, on_commit=False):
+    _enqueue(_send_payment_failed_notification, payment_id, on_commit=on_commit)

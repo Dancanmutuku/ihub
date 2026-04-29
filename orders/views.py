@@ -2,6 +2,7 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from django.contrib.admin.views.decorators import staff_member_required
+from django.db import transaction
 from django.utils import timezone
 from cart.cart import Cart
 from .models import Order, OrderItem
@@ -20,19 +21,20 @@ def order_create(request):
     if request.method == 'POST':
         form = OrderCreateForm(request.POST, user=request.user)
         if form.is_valid():
-            order = form.save(commit=False)
-            if request.user.is_authenticated:
-                order.user = request.user
-            order.save()
-            for item in cart:
-                OrderItem.objects.create(
-                    order=order,
-                    product=item['product'],
-                    product_name=item['product'].name,
-                    price=item['price'],
-                    quantity=item['quantity'],
-                )
-            send_order_created_notifications(order)
+            with transaction.atomic():
+                order = form.save(commit=False)
+                if request.user.is_authenticated:
+                    order.user = request.user
+                order.save()
+                for item in cart:
+                    OrderItem.objects.create(
+                        order=order,
+                        product=item['product'],
+                        product_name=item['product'].name,
+                        price=item['price'],
+                        quantity=item['quantity'],
+                    )
+                send_order_created_notifications(order.id, on_commit=True)
             cart.clear()
             request.session['order_id'] = order.id
             return redirect('payments:payment_process')
