@@ -1,0 +1,56 @@
+[
+{
+  "model": "auth.user",
+  "pk": 1,
+  "fields": {
+    "password": "pbkdf2_sha256$870000$tU5zDQWPmEI5LbU8U4PeOB$DSMSedJIkIAXpgEsOb3AJtX6FhBzm0EOZXYAS7bRTwI=",
+    "last_login": "2026-04-28T12:52:15.850Z",
+    "is_superuser": true,
+    "username": "dancan.mbuvi",
+    "first_name": "Mutuku",
+    "last_name": "Dancan",
+    "email": "dancanmutuku7@gmail.com",
+    "is_staff": true,
+    "is_active": true,
+    "date_joined": "2026-03-31T08:54:08Z",
+    "groups": [],
+    "user_permissions": []
+  }
+},
+{
+  "model": "auth.user",
+  "pk": 2,
+  "fields": {
+    "password": "pbkdf2_sha256$1200000$T1j60mITJ2plV7PEvZNwU6$HUxH4Znpp/p8OFn0fv1YF8baOiCd5azivvfz0NeRWc8=",
+    "last_login": "2026-03-31T11:31:29.447Z",
+    "is_superuser": false,
+    "username": "dancanmutuku7",
+    "first_name": "",
+    "last_name": "",
+    "email": "dancanmutuku7@gmail.com",
+    "is_staff": false,
+    "is_active": true,
+    "date_joined": "2026-03-31T08:54:46.275Z",
+    "groups": [],
+    "user_permissions": []
+  }
+},
+{
+  "model": "auth.user",
+  "pk": 3,
+  "fields": {
+    "password": "!hLD0BDf7hmz221qswWteiejFFhmN4NYxVHuXr2vb",
+    "last_login": "2026-04-28T12:48:40.143Z",
+    "is_superuser": false,
+    "username": "dancan",
+    "first_name": "Dancan",
+    "last_name": "mutuku",
+    "email": "mutukudancan6@gmail.com",
+    "is_staff": false,
+    "is_active": true,
+    "date_joined": "2026-04-02T09:09:53.986Z",
+    "groups": [],
+    "user_permissions": []
+  }
+}
+]
