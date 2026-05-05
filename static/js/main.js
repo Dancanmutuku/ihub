@@ -51,6 +51,103 @@ document.addEventListener('DOMContentLoaded', function () {
     });
   });
 
+  document.querySelectorAll('[data-qty-step]').forEach(button => {
+    button.addEventListener('click', function () {
+      const form = this.closest('form');
+      const target = this.dataset.qtyTarget
+        ? document.querySelector(this.dataset.qtyTarget)
+        : form && form.querySelector('[name=quantity]');
+      if (!target) return;
+
+      const step = parseInt(this.dataset.qtyStep, 10);
+      step < 0 ? target.stepDown() : target.stepUp();
+      target.dispatchEvent(new Event('change', { bubbles: true }));
+
+      if (this.dataset.submitForm === 'true' && form) {
+        form.submit();
+      }
+    });
+  });
+
+  document.querySelectorAll('[data-submit-on-change], [data-auto-submit]').forEach(input => {
+    input.addEventListener('change', function () {
+      const form = this.closest('form');
+      if (form) form.submit();
+    });
+  });
+
+  document.querySelectorAll('[data-sort-url]').forEach(select => {
+    select.addEventListener('change', function () {
+      const url = new URL(window.location.href);
+      url.searchParams.set('sort', this.value);
+      window.location.href = url.toString();
+    });
+  });
+
+  document.querySelectorAll('[data-print-document]').forEach(button => {
+    button.addEventListener('click', () => window.print());
+  });
+
+  document.querySelectorAll('.star-label').forEach(label => {
+    label.addEventListener('click', function () {
+      const val = parseInt(this.dataset.val, 10);
+      document.querySelectorAll('.star-label').forEach((starLabel, index) => {
+        const icon = starLabel.querySelector('i');
+        if (icon) icon.classList.toggle('text-warning', index < val);
+      });
+    });
+  });
+
+  document.querySelectorAll('[data-payment-wait]').forEach(waitPanel => {
+    const statusUrl = waitPanel.dataset.statusUrl;
+    const confirmationUrl = waitPanel.dataset.confirmationUrl;
+    const csrfToken = waitPanel.dataset.csrfToken;
+    let attempts = 0;
+    const maxAttempts = 24;
+
+    const statusText = document.getElementById('statusText');
+    const successMsg = document.getElementById('successMsg');
+    const failMsg = document.getElementById('failMsg');
+    const actions = document.getElementById('actions');
+    const receiptText = document.getElementById('receiptText');
+
+    function checkStatus() {
+      fetch(statusUrl, { method: 'POST', headers: { 'X-CSRFToken': csrfToken } })
+        .then(response => response.json())
+        .then(data => {
+          if (data.paid) {
+            if (statusText) statusText.textContent = 'Payment confirmed!';
+            if (successMsg) successMsg.classList.remove('d-none');
+            if (failMsg) failMsg.classList.add('d-none');
+            if (actions) actions.classList.add('d-none');
+            if (data.receipt && receiptText) receiptText.textContent = 'Receipt: ' + data.receipt;
+            setTimeout(() => { window.location.href = confirmationUrl; }, 2500);
+            return;
+          }
+
+          if (data.status === 'failed' || data.status === 'cancelled') {
+            if (failMsg) failMsg.classList.remove('d-none');
+            if (statusText) statusText.textContent = 'Payment failed.';
+            return;
+          }
+
+          attempts++;
+          if (attempts < maxAttempts) {
+            if (statusText) statusText.textContent = `Waiting... (${attempts * 5}s elapsed)`;
+            setTimeout(checkStatus, 5000);
+          } else if (statusText) {
+            statusText.textContent = 'Timed out. Please check your M-Pesa or retry.';
+          }
+        })
+        .catch(() => {
+          attempts++;
+          if (attempts < maxAttempts) setTimeout(checkStatus, 5000);
+        });
+    }
+
+    setTimeout(checkStatus, 5000);
+  });
+
   // ── Sticky filter form – preserve scroll position ─────────
   const filterForm = document.getElementById('filterForm');
   if (filterForm) {

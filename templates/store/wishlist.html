@@ -11,7 +11,7 @@
         <div class="col-6 col-md-4 col-lg-3">
             <div class="product-card">
                 <a href="{% url 'product_detail' item.product.slug %}">
-                    <img src="{{ item.product.image_url }}" class="card-img-top w-100" alt="{{ item.product.name }}" onerror="this.src='https://images.unsplash.com/photo-1518770660439-4636190af475?w=400&q=60'">
+                    <img src="{{ item.product.image_url }}" class="card-img-top w-100" alt="{{ item.product.name }}" data-fallback="https://images.unsplash.com/photo-1518770660439-4636190af475?w=400&q=60">
                 </a>
                 <div class="card-body">
                     {% if item.product.brand %}<div class="brand-tag">{{ item.product.brand }}</div>{% endif %}

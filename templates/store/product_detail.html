@@ -24,7 +24,7 @@
         {% if product.image_url %}
         <img src="{{ product.image_url }}" alt="{{ product.name }}"
              class="img-fluid product-detail-img"
-             onerror="this.src='https://placehold.co/600x500/1a1a2e/00d4ff?text={{ product.name|urlencode }}'" />
+             data-fallback="https://placehold.co/600x500/1a1a2e/00d4ff?text={{ product.name|urlencode }}" />
         {% else %}
         <div class="product-img-placeholder-lg"><i class="bi bi-cpu display-1"></i></div>
         {% endif %}
@@ -79,10 +79,10 @@
         <div class="d-flex align-items-center gap-3 mb-3">
           <label class="text-muted small">Qty:</label>
           <div class="qty-control">
-            <button type="button" class="qty-btn" onclick="changeQty(-1)"><i class="bi bi-dash"></i></button>
+            <button type="button" class="qty-btn" data-qty-step="-1" data-qty-target="#qtyInput"><i class="bi bi-dash"></i></button>
             <input type="number" name="quantity" id="qtyInput" value="1" min="1" max="{{ product.stock }}"
                    class="qty-input" />
-            <button type="button" class="qty-btn" onclick="changeQty(1)"><i class="bi bi-plus"></i></button>
+            <button type="button" class="qty-btn" data-qty-step="1" data-qty-target="#qtyInput"><i class="bi bi-plus"></i></button>
           </div>
         </div>
         <div class="d-flex gap-3 flex-wrap">
@@ -208,24 +208,4 @@
   {% endif %}
 
 </div>
-{% endblock %}
-
-{% block extra_scripts %}
-<script>
-function changeQty(delta) {
-  const input = document.getElementById('qtyInput');
-  let val = parseInt(input.value) + delta;
-  val = Math.max(1, Math.min(parseInt(input.max), val));
-  input.value = val;
-}
-// Star picker
-document.querySelectorAll('.star-label').forEach(label => {
-  label.addEventListener('click', function() {
-    const val = parseInt(this.dataset.val);
-    document.querySelectorAll('.star-label').forEach((l, i) => {
-      l.querySelector('i').classList.toggle('text-warning', i < val);
-    });
-  });
-});
-</script>
 {% endblock %}

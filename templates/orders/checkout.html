@@ -84,7 +84,7 @@
         <div class="checkout-item">
           <img src="{{ item.product.image_url|default:'https://placehold.co/50x50/1a1a2e/00d4ff?text=P' }}"
                alt="{{ item.product.name }}" class="checkout-item-img"
-               onerror="this.src='https://placehold.co/50x50/1a1a2e/00d4ff?text=P'" />
+               data-fallback="https://placehold.co/50x50/1a1a2e/00d4ff?text=P" />
           <div class="flex-grow-1">
             <div class="small fw-semibold">{{ item.product.name|truncatechars:40 }}</div>
             <div class="text-muted x-small">Qty: {{ item.quantity }}</div>

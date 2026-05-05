@@ -18,7 +18,7 @@
           <div class="cart-img-wrap">
             <img src="{{ item.product.image_url|default:'https://placehold.co/100x100/1a1a2e/00d4ff?text=IMG' }}"
                  alt="{{ item.product_name }}" class="cart-img"
-                 onerror="this.src='https://placehold.co/100x100/1a1a2e/00d4ff?text=IMG'" />
+                 data-fallback="https://placehold.co/100x100/1a1a2e/00d4ff?text=IMG" />
           </div>
           <div class="cart-info flex-grow-1">
             <a href="{{ item.product.get_absolute_url }}" class="cart-item-name">{{ item.product.name }}</a>
@@ -28,15 +28,13 @@
             <form method="post" action="{% url 'cart:cart_update' item.product.id %}" class="d-flex align-items-center gap-2">
               {% csrf_token %}
               <div class="qty-control small">
-                <button type="button" class="qty-btn"
-                        onclick="this.closest('form').querySelector('[name=quantity]').stepDown(); this.closest('form').submit()">
+                <button type="button" class="qty-btn" data-qty-step="-1" data-submit-form="true">
                   <i class="bi bi-dash"></i>
                 </button>
                 <input type="number" name="quantity" value="{{ item.quantity }}"
                        min="1" max="{{ item.product.stock }}" class="qty-input"
-                       onchange="this.closest('form').submit()" />
-                <button type="button" class="qty-btn"
-                        onclick="this.closest('form').querySelector('[name=quantity]').stepUp(); this.closest('form').submit()">
+                       data-submit-on-change="true" />
+                <button type="button" class="qty-btn" data-qty-step="1" data-submit-form="true">
                   <i class="bi bi-plus"></i>
                 </button>
               </div>

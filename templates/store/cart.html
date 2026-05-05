@@ -12,7 +12,7 @@
             <div style="background:var(--card-bg);border:1px solid var(--border);border-radius:8px;padding:1.2rem;margin-bottom:1rem">
                 <div class="row align-items-center g-3">
                     <div class="col-3 col-md-2">
-                        <img src="{{ item.product.image_url }}" class="img-fluid rounded" style="max-height:80px;object-fit:cover;width:100%" onerror="this.src='https://images.unsplash.com/photo-1518770660439-4636190af475?w=200&q=60'" alt="{{ item.product.name }}">
+                        <img src="{{ item.product.image_url }}" class="img-fluid rounded" style="max-height:80px;object-fit:cover;width:100%" data-fallback="https://images.unsplash.com/photo-1518770660439-4636190af475?w=200&q=60" alt="{{ item.product.name }}">
                     </div>
                     <div class="col-9 col-md-4">
                         <h6 style="color:white;margin:0;font-weight:600">{{ item.product.name }}</h6>

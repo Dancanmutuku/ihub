@@ -1,4 +1,4 @@
-{% load store_tags %}
+{% load static store_tags %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -287,7 +287,7 @@
 <body>
   <div class="page">
     <div class="toolbar">
-      <button onclick="window.print()">Print / Save PDF</button>
+      <button type="button" data-print-document="true">Print / Save PDF</button>
       {% if request.user.is_staff %}
       <a href="{% url 'admin:orders_order_change' order.id %}">Open in Admin</a>
       {% else %}
@@ -391,5 +391,6 @@
       </div>
     </div>
   </div>
+  <script src="{% static 'js/main.js' %}"></script>
 </body>
 </html>

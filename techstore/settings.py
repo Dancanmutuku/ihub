@@ -9,10 +9,10 @@ RENDER = os.getenv('RENDER', '').lower() == 'true'
 
 # ── Security ─────────────────────────────────────────────────
 SECRET_KEY = config('SECRET_KEY', default='django-insecure-change-me')
-DEBUG = config('DEBUG', default=not RENDER, cast=bool)
+DEBUG = config('DEBUG', default=False, cast=bool)
 ALLOWED_HOSTS = list(config(
     'ALLOWED_HOSTS',
-    default='localhost,127.0.0.1,lienable-fonda-apprehensively.ngrok-free.dev',
+    default='localhost,ihub-vfxz.onrender.com,127.0.0.1,lienable-fonda-apprehensively.ngrok-free.dev',
     cast=Csv()
 ))
 RENDER_EXTERNAL_HOSTNAME = os.getenv('RENDER_EXTERNAL_HOSTNAME', '').strip()
@@ -40,6 +40,8 @@ INSTALLED_APPS = [
     'django.contrib.sites',
 
     # Third-party
+    'corsheaders',
+    'csp',
     'allauth',
     'allauth.account',
     'allauth.socialaccount',
@@ -57,9 +59,12 @@ INSTALLED_APPS = [
 # ── Middleware ───────────────────────────────────────────────
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
+    'csp.middleware.CSPMiddleware',
     'whitenoise.middleware.WhiteNoiseMiddleware',  # must be before SessionMiddleware for static files
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
+    'techstore.middleware.NoStoreSensitivePagesMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'allauth.account.middleware.AccountMiddleware',  # required
@@ -71,8 +76,58 @@ SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 USE_X_FORWARDED_HOST = True
 
 if not DEBUG:
+    SECURE_SSL_REDIRECT = True
+    SECURE_HSTS_SECONDS = 31536000
+    SECURE_HSTS_INCLUDE_SUBDOMAINS = True
+    SECURE_HSTS_PRELOAD = True
     SESSION_COOKIE_SECURE = True
     CSRF_COOKIE_SECURE = True
+
+SESSION_COOKIE_HTTPONLY = True
+CSRF_COOKIE_HTTPONLY = True
+SESSION_COOKIE_SECURE = True
+CSRF_COOKIE_SECURE = True
+SESSION_COOKIE_SAMESITE = 'Lax'
+CSRF_COOKIE_SAMESITE = 'Lax'
+
+CORS_ALLOW_ALL_ORIGINS = False
+CORS_ALLOWED_ORIGINS = list(config(
+    'CORS_ALLOWED_ORIGINS',
+    default='https://ihub-vfxz.onrender.com',
+    cast=Csv(),
+))
+
+CONTENT_SECURITY_POLICY = {
+    'DIRECTIVES': {
+        'default-src': ("'self'",),
+        'script-src': (
+            "'self'",
+            'https://cdn.jsdelivr.net',
+            'https://apis.google.com',
+        ),
+        'style-src': (
+            "'self'",
+            "'unsafe-inline'",
+            'https://cdn.jsdelivr.net',
+            'https://fonts.googleapis.com',
+        ),
+        'img-src': (
+            "'self'",
+            'data:',
+            'https:',
+        ),
+        'font-src': (
+            "'self'",
+            'data:',
+            'https://cdn.jsdelivr.net',
+            'https://fonts.gstatic.com',
+        ),
+        'connect-src': ("'self'",),
+        'object-src': ("'none'",),
+        'base-uri': ("'self'",),
+        'frame-ancestors': ("'self'",),
+    }
+}
 
 ROOT_URLCONF = 'techstore.urls'
 

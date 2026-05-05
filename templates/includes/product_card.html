@@ -9,7 +9,7 @@
   <a href="{{ product.get_absolute_url }}" class="product-img-link">
     {% if product.image_url %}
     <img src="{{ product.image_url }}" alt="{{ product.name }}" class="product-img" loading="lazy"
-         onerror="this.src='https://placehold.co/400x300/1a1a2e/00d4ff?text=TechStore'" />
+         data-fallback="https://placehold.co/400x300/1a1a2e/00d4ff?text=TechStore" />
     {% else %}
     <div class="product-img-placeholder"><i class="bi bi-cpu-fill"></i></div>
     {% endif %}

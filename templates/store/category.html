@@ -13,8 +13,7 @@
 
   <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-2">
     <span class="text-muted">{{ products.count }} product{{ products.count|pluralize }} found</span>
-    <select class="form-select form-select-sm" style="width:auto"
-            onchange="location.href='?sort='+this.value">
+    <select class="form-select form-select-sm" style="width:auto" data-sort-url="true">
       <option value="-created" {% if sort == '-created' %}selected{% endif %}>Newest</option>
       <option value="price" {% if sort == 'price' %}selected{% endif %}>Price ↑</option>
       <option value="-price" {% if sort == '-price' %}selected{% endif %}>Price ↓</option>
