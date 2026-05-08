@@ -10,7 +10,13 @@ class Payment(models.Model):
         ('cancelled', 'Cancelled'),
     ]
 
-    order = models.OneToOneField(Order, on_delete=models.CASCADE, related_name='payment')
+    order = models.OneToOneField(
+        Order,
+        on_delete=models.SET_NULL,
+        related_name='payment',
+        null=True,
+        blank=True,
+    )
     checkout_request_id = models.CharField(max_length=200, blank=True)
     merchant_request_id = models.CharField(max_length=200, blank=True)
     mpesa_receipt_number = models.CharField(max_length=100, blank=True)
@@ -22,4 +28,5 @@ class Payment(models.Model):
     updated = models.DateTimeField(auto_now=True)
 
     def __str__(self):
-        return f'Payment for Order #{self.order.id} – {self.status}'
+        order_id = self.order_id or 'missing order'
+        return f'Payment for Order #{order_id} - {self.status}'

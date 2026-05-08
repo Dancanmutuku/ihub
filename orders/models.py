@@ -33,7 +33,8 @@ class Order(models.Model):
         ordering = ['-created']
 
     def __str__(self):
-        return f'Order #{self.id} – {self.email}'
+        email = self.email or 'no email'
+        return f'Order #{self.id or "unsaved"} - {email}'
 
     def get_total_cost(self):
         return sum(item.get_cost() for item in self.items.all())
@@ -51,7 +52,8 @@ class OrderItem(models.Model):
     quantity = models.PositiveIntegerField(default=1)
 
     def __str__(self):
-        return f'{self.quantity}x {self.product_name}'
+        product_name = self.product_name or 'Unknown product'
+        return f'{self.quantity}x {product_name}'
 
     def get_cost(self):
         return self.price * self.quantity

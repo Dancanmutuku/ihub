@@ -53,7 +53,7 @@
 {
   "model": "sites.site",
   "fields": {
-    "domain": "localhost:8000",
+    "domain": "ihub-vfxz.onrender.com",
     "name": "TechStore KE"
   }
 },

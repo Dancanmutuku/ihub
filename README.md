@@ -128,7 +128,7 @@ DATABASE_URL=postgresql://postgres:postgres@localhost:5432/techstore
 4. Add `http://localhost:8000` to **Authorized JavaScript origins**
 5. Add `http://localhost:8000/accounts/google/login/callback/` to **Authorized redirect URIs**
 6. Copy **Client ID** and **Client Secret** into your `.env`
-7. In Django admin → **Sites** → set domain to `localhost:8000`
+7. In Django admin -> **Sites** -> set domain to `ihub-vfxz.onrender.com` for production, or `localhost:8000` for local development.
 8. In Django admin → **Social Applications** → Add Google with your credentials and select the site
 
 ---

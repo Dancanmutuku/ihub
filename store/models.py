@@ -23,7 +23,7 @@ class Category(models.Model):
         ordering = ["order", "name"]
 
     def __str__(self):
-        return self.name
+        return self.name or f"Category {self.id or 'unsaved'}"
 
     def get_absolute_url(self):
         return reverse("store:category", kwargs={"slug": self.slug})
@@ -92,7 +92,7 @@ class Product(models.Model):
     # String Representation
     # =========================
     def __str__(self):
-        return self.name
+        return self.name or f"Product {self.id or 'unsaved'}"
 
     # =========================
     # URL Helper
@@ -140,4 +140,6 @@ class Review(models.Model):
         unique_together = ["product", "user"]
 
     def __str__(self):
-        return f"{self.user.username} – {self.product.name} ({self.rating}★)"
+        username = getattr(self.user, "username", None) or "Unknown user"
+        product_name = getattr(self.product, "name", None) or "Unknown product"
+        return f"{username} - {product_name} ({self.rating}/5)"
