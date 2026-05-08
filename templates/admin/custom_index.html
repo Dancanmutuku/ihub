@@ -1,0 +1,39 @@
+{% extends "admin/base_site.html" %}
+{% load i18n static %}
+
+{% block extrastyle %}{{ block.super }}
+<link rel="stylesheet" href="{% static 'admin_dashboard/css/admin_dashboard.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="dashboard-shell">
+  <section class="dashboard-hero">
+    <div>
+      <p class="eyebrow">Operations cockpit</p>
+      <h1>TechStore administration</h1>
+      <p class="hero-copy">Manage catalog records, review store health, and trace staff activity from one admin workspace.</p>
+    </div>
+    <div class="hero-actions">
+      <a class="button primary" href="{% url 'admin:insights' %}">Open insights</a>
+      <a class="button" href="{% url 'admin:audit_logs' %}">View audit logs</a>
+    </div>
+  </section>
+
+  <div class="quick-grid">
+    <a class="quick-card" href="{% url 'admin:insights' %}">
+      <span class="quick-icon">IN</span>
+      <strong>Insights</strong>
+      <small>Revenue, orders, stock, customers, and recent activity.</small>
+    </a>
+    <a class="quick-card" href="{% url 'admin:audit_logs' %}">
+      <span class="quick-icon">AU</span>
+      <strong>System audit logs</strong>
+      <small>Track admin adds, edits, deletes, and affected records.</small>
+    </a>
+  </div>
+
+  <div id="content-main">
+    {% include "admin/app_list.html" with app_list=app_list show_changelinks=True %}
+  </div>
+</div>
+{% endblock %}

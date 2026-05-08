@@ -1,0 +1,93 @@
+{% extends "admin/base_site.html" %}
+{% load i18n static %}
+
+{% block extrastyle %}{{ block.super }}
+<link rel="stylesheet" href="{% static 'admin_dashboard/css/admin_dashboard.css' %}">
+{% endblock %}
+
+{% block breadcrumbs %}
+<div class="breadcrumbs">
+  <a href="{% url 'admin:index' %}">{% translate 'Home' %}</a> &rsaquo; Audit logs
+</div>
+{% endblock %}
+
+{% block content %}
+<div class="dashboard-shell">
+  <section class="dashboard-hero compact">
+    <div>
+      <p class="eyebrow">Accountability trail</p>
+      <h1>{{ title }}</h1>
+      <p class="hero-copy">{{ subtitle }}</p>
+    </div>
+    <div class="hero-actions">
+      <a class="button" href="{{ insights_url }}">Insights</a>
+      <a class="button" href="{% url 'admin:index' %}">Admin home</a>
+    </div>
+  </section>
+
+  <section class="module panel">
+    <form class="audit-filters" method="get">
+      <label>
+        Search
+        <input type="search" name="q" value="{{ query }}" placeholder="User, object, model, or change">
+      </label>
+      <label>
+        Action
+        <select name="action">
+          <option value="">All actions</option>
+          <option value="1" {% if selected_action == "1" %}selected{% endif %}>Added</option>
+          <option value="2" {% if selected_action == "2" %}selected{% endif %}>Changed</option>
+          <option value="3" {% if selected_action == "3" %}selected{% endif %}>Deleted</option>
+        </select>
+      </label>
+      <label>
+        Period
+        <select name="period">
+          <option value="7" {% if selected_period == "7" %}selected{% endif %}>Last 7 days</option>
+          <option value="30" {% if selected_period == "30" %}selected{% endif %}>Last 30 days</option>
+          <option value="90" {% if selected_period == "90" %}selected{% endif %}>Last 90 days</option>
+          <option value="all" {% if selected_period == "all" %}selected{% endif %}>All time</option>
+        </select>
+      </label>
+      <button class="button primary" type="submit">Apply filters</button>
+      <a class="button" href="{{ audit_url }}">Reset</a>
+    </form>
+  </section>
+
+  <section class="module panel">
+    <h2>Showing {{ total_visible }} audit events</h2>
+    <table class="audit-table">
+      <thead>
+        <tr>
+          <th>Time</th>
+          <th>User</th>
+          <th>Action</th>
+          <th>Record</th>
+          <th>Model</th>
+          <th>Details</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for row in log_rows %}
+        <tr>
+          <td>{{ row.entry.action_time|date:"M j, Y H:i:s" }}</td>
+          <td>{{ row.entry.user|default:"System" }}</td>
+          <td><span class="pill action-{{ row.entry.action_flag }}">{{ row.action_label }}</span></td>
+          <td>
+            {% if row.entry.get_admin_url %}
+            <a href="{{ row.entry.get_admin_url }}">{{ row.entry.object_repr }}</a>
+            {% else %}
+            {{ row.entry.object_repr }}
+            {% endif %}
+          </td>
+          <td>{{ row.entry.content_type.app_label }}.{{ row.entry.content_type.model }}</td>
+          <td>{{ row.change_message }}</td>
+        </tr>
+        {% empty %}
+        <tr><td colspan="6">No matching audit events found.</td></tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </section>
+</div>
+{% endblock %}

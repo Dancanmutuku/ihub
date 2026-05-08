@@ -1,0 +1,165 @@
+{% extends "admin/base_site.html" %}
+{% load i18n static %}
+
+{% block extrastyle %}{{ block.super }}
+<link rel="stylesheet" href="{% static 'admin_dashboard/css/admin_dashboard.css' %}">
+{% endblock %}
+
+{% block breadcrumbs %}
+<div class="breadcrumbs">
+  <a href="{% url 'admin:index' %}">{% translate 'Home' %}</a> &rsaquo; Insights
+</div>
+{% endblock %}
+
+{% block content %}
+<div class="dashboard-shell">
+  <section class="dashboard-hero compact">
+    <div>
+      <p class="eyebrow">Store intelligence</p>
+      <h1>{{ title }}</h1>
+      <p class="hero-copy">{{ subtitle }}</p>
+    </div>
+    <div class="hero-actions">
+      <a class="button" href="{{ audit_url }}">Audit logs</a>
+      <a class="button" href="{% url 'admin:index' %}">Admin home</a>
+    </div>
+  </section>
+
+  <div class="stats-grid">
+    {% for stat in stats %}
+    <article class="stat-card">
+      <span>{{ stat.label }}</span>
+      <strong>{{ stat.value }}</strong>
+      <small>{{ stat.detail }}</small>
+      {% if stat.trend != None %}
+        <em class="{% if stat.trend >= 0 %}positive{% else %}negative{% endif %}">{{ stat.trend }}% vs previous 30 days</em>
+      {% endif %}
+    </article>
+    {% endfor %}
+  </div>
+
+  <div class="dashboard-grid">
+    <section class="module panel wide">
+      <h2>Revenue rhythm</h2>
+      {% if daily_revenue %}
+      <div class="bar-list">
+        {% for row in daily_revenue %}
+        <div class="bar-row">
+          <span>{{ row.day|date:"M j" }}</span>
+          <div class="bar-track"><i style="width: {{ row.bar_width }}%;"></i></div>
+          <strong>KES {{ row.revenue|floatformat:2 }}</strong>
+          <small>{{ row.orders }} orders</small>
+        </div>
+        {% endfor %}
+      </div>
+      {% else %}
+      <p class="muted">No paid order revenue recorded in the last 30 days yet.</p>
+      {% endif %}
+    </section>
+
+    <section class="module panel">
+      <h2>Order status</h2>
+      <ul class="metric-list">
+        <li><span>Pending</span><strong>{{ status_counts.pending|default:0 }}</strong></li>
+        <li><span>Processing</span><strong>{{ status_counts.processing|default:0 }}</strong></li>
+        <li><span>Shipped</span><strong>{{ status_counts.shipped|default:0 }}</strong></li>
+        <li><span>Delivered</span><strong>{{ status_counts.delivered|default:0 }}</strong></li>
+        <li><span>Cancelled</span><strong>{{ status_counts.cancelled|default:0 }}</strong></li>
+      </ul>
+    </section>
+
+    <section class="module panel">
+      <h2>Payment status</h2>
+      <ul class="metric-list">
+        <li><span>Completed</span><strong>{{ payment_counts.completed|default:0 }}</strong></li>
+        <li><span>Pending</span><strong>{{ payment_counts.pending|default:0 }}</strong></li>
+        <li><span>Failed</span><strong>{{ payment_counts.failed|default:0 }}</strong></li>
+        <li><span>Cancelled</span><strong>{{ payment_counts.cancelled|default:0 }}</strong></li>
+      </ul>
+    </section>
+
+    <section class="module panel wide">
+      <h2>Top selling products</h2>
+      <table>
+        <thead><tr><th>Product</th><th>Units</th><th>Paid revenue</th></tr></thead>
+        <tbody>
+          {% for product in top_products %}
+          <tr>
+            <td>{{ product.product_name }}</td>
+            <td>{{ product.units }}</td>
+            <td>KES {{ product.revenue|floatformat:2 }}</td>
+          </tr>
+          {% empty %}
+          <tr><td colspan="3">No paid product sales recorded yet.</td></tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </section>
+
+    <section class="module panel">
+      <h2>Inventory watch</h2>
+      <ul class="watch-list">
+        {% for product in inventory_watch %}
+        <li>
+          <a href="{% url 'admin:store_product_change' product.id %}">{{ product.name }}</a>
+          <span>{{ product.category.name }}</span>
+          <strong>{{ product.stock }} left</strong>
+        </li>
+        {% empty %}
+        <li class="muted">No low-stock products right now.</li>
+        {% endfor %}
+      </ul>
+    </section>
+
+    <section class="module panel">
+      <h2>System pulse</h2>
+      <ul class="metric-list">
+        <li><span>Categories</span><strong>{{ counts.categories }}</strong></li>
+        <li><span>Reviews</span><strong>{{ counts.reviews }}</strong></li>
+        <li><span>Active sessions</span><strong>{{ counts.active_sessions }}</strong></li>
+        <li><span>Staff users</span><strong>{{ counts.staff_users }}</strong></li>
+      </ul>
+    </section>
+
+    <section class="module panel wide">
+      <h2>Recent orders</h2>
+      <table>
+        <thead><tr><th>Order</th><th>Customer</th><th>Status</th><th>Paid</th><th>Total</th><th>Created</th></tr></thead>
+        <tbody>
+          {% for order in recent_orders %}
+          <tr>
+            <td><a href="{% url 'admin:orders_order_change' order.id %}">#{{ order.id }}</a></td>
+            <td>{{ order.full_name }}<br><small>{{ order.email }}</small></td>
+            <td><span class="pill">{{ order.get_status_display }}</span></td>
+            <td>{{ order.paid|yesno:"Yes,No" }}</td>
+            <td>KES {{ order.get_total_cost|floatformat:2 }}</td>
+            <td>{{ order.created|date:"M j, Y H:i" }}</td>
+          </tr>
+          {% empty %}
+          <tr><td colspan="6">No orders yet.</td></tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </section>
+
+    <section class="module panel wide">
+      <h2>Latest admin activity</h2>
+      <table>
+        <thead><tr><th>When</th><th>User</th><th>Object</th><th>Action</th></tr></thead>
+        <tbody>
+          {% for log in latest_admin_logs %}
+          <tr>
+            <td>{{ log.action_time|date:"M j, Y H:i" }}</td>
+            <td>{{ log.user }}</td>
+            <td>{{ log.object_repr }}</td>
+            <td>{{ log.get_action_flag_display }}</td>
+          </tr>
+          {% empty %}
+          <tr><td colspan="4">No admin activity recorded yet.</td></tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </section>
+  </div>
+</div>
+{% endblock %}
