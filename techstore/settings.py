@@ -253,3 +253,26 @@ MPESA_PASSKEY = config(
 )
 MPESA_CALLBACK_URL = config('MPESA_CALLBACK_URL', default='')
 MPESA_ENVIRONMENT = config('MPESA_ENVIRONMENT', default='sandbox')
+
+# ── Production diagnostics ──────────────────────────────────
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'handlers': {
+        'console': {
+            'class': 'logging.StreamHandler',
+        },
+    },
+    'loggers': {
+        'django.request': {
+            'handlers': ['console'],
+            'level': 'ERROR',
+            'propagate': False,
+        },
+        'django.server': {
+            'handlers': ['console'],
+            'level': 'INFO',
+            'propagate': False,
+        },
+    },
+}
