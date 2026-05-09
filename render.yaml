@@ -22,6 +22,8 @@ services:
         value: "False"
       - key: WEB_CONCURRENCY
         value: "4"
+      - key: PYTHON_VERSION
+        value: "3.12.8"
       - key: ALLOWED_HOSTS
         value: "localhost,127.0.0.1,ihub-vfxz.onrender.com"
       - key: CSRF_TRUSTED_ORIGINS
